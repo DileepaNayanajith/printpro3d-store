@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 
 const products = ref([])
+const search = ref('')
 
 onMounted(async () => {
   const response = await fetch('https://dummyjson.com/products')
@@ -17,16 +18,28 @@ onMounted(async () => {
       Our Products
     </h1>
 
+    <div class="mb-8">
+        <input
+            v-model="search"
+            type="text"
+            placeholder="Search products..."
+            class="border p-3 rounded-lg w-full"
+            />
+    </div>
+
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
     >
 
       <div
-        v-for="product in products"
-        :key="product.id"
-        class="bg-white rounded-xl shadow-lg overflow-hidden"
-      >
-
+  v-for="
+    product in products.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase())
+    )
+  "
+  :key="product.id"
+  class="bg-white rounded-xl shadow-lg overflow-hidden"
+>
         <img
           :src="product.thumbnail"
           :alt="product.title"
@@ -56,4 +69,5 @@ onMounted(async () => {
     </div>
 
   </div>
+  
 </template>
