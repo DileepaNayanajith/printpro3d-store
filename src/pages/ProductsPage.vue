@@ -42,12 +42,12 @@ onMounted(async () => {
           <p class="text-gray-500 mt-2">
             ${{ product.price }}
           </p>
-
-          <button
-            class="mt-4 bg-cyan-500 text-white px-4 py-2 rounded"
-          >
-            View Product
-          </button>
+            <router-link
+                :to="`/products/${product.id}`"
+                class="inline-block mt-4 bg-cyan-500 text-white px-4 py-2 rounded"
+                >
+                View Product
+            </router-link>
 
         </div>
 
