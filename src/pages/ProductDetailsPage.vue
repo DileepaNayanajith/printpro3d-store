@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCartStore } from '../stores/cartStore'
 
 const route = useRoute()
+const cart = useCartStore()
 const product = ref<any>(null)
+
 
 onMounted(async () => {
   const response = await fetch(
@@ -41,7 +44,15 @@ onMounted(async () => {
       <p class="mt-4 text-gray-600">
         {{ product.description }}
       </p>
-
+        <button
+        @click="
+            cart.addToCart(product);
+            console.log(cart.items);
+        "
+            class="mt-6 bg-green-600 text-white px-6 py-3 rounded-lg"
+        >
+                Add to Cart
+            </button>
     </div>
 
     <div v-else>
