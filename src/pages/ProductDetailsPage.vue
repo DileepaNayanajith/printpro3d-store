@@ -5,8 +5,8 @@ import { useCartStore } from '../stores/cartStore'
 
 const route = useRoute()
 const cart = useCartStore()
-const product = ref<any>(null)
 
+const product = ref<any>(null)
 
 onMounted(async () => {
   const response = await fetch(
@@ -18,45 +18,166 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-8">
+  <div class="max-w-7xl mx-auto px-6 py-10">
 
     <div v-if="product">
+
+      <!-- Back Button -->
       <router-link
-  to="/products"
-  class="inline-block mb-6 bg-gray-800 text-white px-4 py-2 rounded"
->
-  ← Back to Products
-</router-link>
-      <img
-        :src="product.thumbnail"
-        :alt="product.title"
-        class="w-80 rounded-xl mb-6"
+        to="/products"
+        class="
+          inline-block
+          mb-10
+          bg-gray-900
+          text-white
+          px-5
+          py-3
+          rounded-full
+          hover:bg-gray-800
+          transition
+        "
+      >
+        ← Back to Products
+      </router-link>
+
+      <!-- Product Layout -->
+      <div
+        class="
+          grid
+          md:grid-cols-2
+          gap-16
+          items-center
+        "
       >
 
-      <h1 class="text-4xl font-bold">
-        {{ product.title }}
-      </h1>
-
-      <p class="text-2xl mt-4">
-        ${{ product.price }}
-      </p>
-
-      <p class="mt-4 text-gray-600">
-        {{ product.description }}
-      </p>
-        <button
-        @click="
-            cart.addToCart(product);
-            console.log(cart.items);
-        "
-            class="mt-6 bg-green-600 text-white px-6 py-3 rounded-lg"
+        <!-- Product Image -->
+        <div
+          class="
+            bg-gray-100
+            rounded-3xl
+            p-10
+            flex
+            justify-center
+            
+          "
         >
-                Add to Cart
-            </button>
+          <img
+            :src="product.thumbnail"
+            :alt="product.title"
+            class="w-full max-w-md"
+          >
+        </div>
+
+        <!-- Product Info -->
+        <div>
+
+          <!-- Discount Badge -->
+          <div
+            class="
+              inline-block
+              bg-red-500
+              text-white
+              px-3
+              py-1
+              rounded-full
+              text-sm
+              font-semibold
+              mb-4
+            "
+          >
+            {{ product.discountPercentage }}% OFF
+          </div>
+
+          <!-- Title -->
+          <h1
+            class="
+              text-5xl
+              font-bold
+              text-gray-900
+            "
+          >
+            {{ product.title }}
+          </h1>
+
+          <!-- Rating -->
+          <div
+            class="
+              flex
+              items-center
+              gap-2
+              mt-4
+            "
+          >
+            <<span class="text-yellow-500 text-xl">
+                ⭐
+                </span>
+
+                <span class="font-medium">
+                {{ product.rating }}
+                </span>
+          </div>
+
+          <!-- Price -->
+          <p
+            class="
+              text-4xl
+              font-bold
+              mt-6
+            "
+          >
+            ${{ product.price }}
+          </p>
+
+          <!-- Description -->
+          <p
+            class="
+              mt-6
+              text-gray-600
+              leading-relaxed
+              text-lg
+            "
+          >
+            {{ product.description }}
+          </p>
+
+          <!-- Add To Cart -->
+          <button
+            @click="cart.addToCart(product)"
+            class="
+              mt-8
+              bg-black
+              text-white
+              px-8
+              py-4
+              rounded-full
+              hover:bg-gray-800
+              transition
+              text-lg
+            "
+          >
+            Add to Cart
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div v-else>
-      Loading...
+    <!-- Loading State -->
+    <div
+      v-else
+      class="
+        flex
+        justify-center
+        items-center
+        h-96
+        text-2xl
+        font-semibold
+        text-gray-500
+      "
+    >
+      Loading Product...
     </div>
 
   </div>
