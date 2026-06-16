@@ -2,33 +2,33 @@
 import { useCartStore } from '../stores/cartStore'
 
 const cart = useCartStore()
-
-const totalPrice = () => {
-  return cart.items.reduce(
-    (total, item) => total + item.price,
-    0
-  )
-}
 </script>
 
 <template>
-  <div class="p-8">
-    <h1 class="text-4xl font-bold mb-8">
+  <div class="max-w-6xl mx-auto px-6 py-10">
+
+    <h1 class="text-4xl font-bold mb-10">
       Shopping Cart
     </h1>
 
-    <!-- Empty Cart State -->
+    <!-- Empty Cart -->
     <div
       v-if="cart.items.length === 0"
-      class="text-center mt-10"
+      class="text-center mt-20"
     >
-      <h2 class="text-2xl font-bold mb-4">
+      <h2 class="text-3xl font-bold mb-6">
         Your Cart is Empty
       </h2>
 
       <router-link
         to="/products"
-        class="bg-cyan-500 text-white px-6 py-3 rounded-lg"
+        class="
+          bg-cyan-500
+          text-white
+          px-6
+          py-3
+          rounded-full
+        "
       >
         Continue Shopping
       </router-link>
@@ -36,33 +36,104 @@ const totalPrice = () => {
 
     <!-- Cart Items -->
     <div v-else>
+
       <div
         v-for="item in cart.items"
         :key="item.id"
-        class="border p-4 rounded-lg mb-4"
+        class="
+          bg-white
+          rounded-2xl
+          shadow-md
+          p-6
+          mb-6
+        "
       >
-        <h2 class="text-xl font-bold">
-          {{ item.title }}
-        </h2>
 
-        <p class="mt-2">
-          ${{ item.price }}
-        </p>
+        <div class="flex justify-between items-center">
 
-        <button
-          @click="cart.removeFromCart(item.id)"
-          class="mt-3 bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Remove
-        </button>
+          <div>
+            <h2 class="text-xl font-bold">
+              {{ item.title }}
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+              ${{ item.price }} each
+            </p>
+          </div>
+
+          <!-- Quantity Controls -->
+          <div class="flex items-center gap-4">
+
+            <button
+              @click="cart.decreaseQuantity(item.id)"
+              class="
+                w-10
+                h-10
+                bg-gray-200
+                rounded-full
+                font-bold
+              "
+            >
+              -
+            </button>
+
+            <span class="text-xl font-bold">
+              {{ item.quantity }}
+            </span>
+
+            <button
+              @click="cart.increaseQuantity(item.id)"
+              class="
+                w-10
+                h-10
+                bg-gray-200
+                rounded-full
+                font-bold
+              "
+            >
+              +
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- Subtotal -->
+        <div class="mt-4 flex justify-between items-center">
+
+          <p class="font-semibold">
+            Subtotal:
+            ${{ (item.price * item.quantity).toFixed(2) }}
+          </p>
+
+          <button
+            @click="cart.removeFromCart(item.id)"
+            class="
+              bg-red-500
+              text-white
+              px-4
+              py-2
+              rounded-lg
+            "
+          >
+            Remove
+          </button>
+
+        </div>
+
       </div>
 
-      <!-- Total Price -->
-      <div class="mt-8 text-right">
-        <h2 class="text-3xl font-bold">
-          Total: ${{ totalPrice() }}
+      <!-- Total -->
+      <div class="text-right mt-10">
+
+        <h2 class="text-4xl font-bold">
+          Total:
+          ${{ cart.totalPrice.toFixed(2) }}
         </h2>
+
       </div>
+
     </div>
+
   </div>
 </template>

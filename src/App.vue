@@ -73,13 +73,12 @@ const cart = useCartStore()
                   bg-cyan-500
                   text-white
                   text-xs
-                  font-bold
                   px-2
                   py-0.5
                   rounded-full
                 "
               >
-                {{ cart.items.length }}
+                {{ cart.totalItems }}
               </span>
             </div>
 
