@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { useCartStore } from './stores/cartStore'
-import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { useCartStore } from './stores/cartStore'
 
 const cart = useCartStore()
+const route = useRoute()
+
 onMounted(() => {
   cart.loadCart()
 })
@@ -43,18 +46,30 @@ onMounted(() => {
           </router-link>
 
           <!-- Navigation -->
-          <div class="flex items-center gap-8 font-medium text-gray-700">
+          <div class="flex items-center gap-8 font-medium">
 
+            <!-- Home -->
             <router-link
               to="/"
-              class="hover:text-cyan-500 transition duration-300"
+              :class="[
+                'transition duration-300 hover:text-cyan-500',
+                route.path === '/'
+                  ? 'text-cyan-500 font-semibold'
+                  : 'text-gray-700'
+              ]"
             >
               Home
             </router-link>
 
+            <!-- Products -->
             <router-link
               to="/products"
-              class="hover:text-cyan-500 transition duration-300"
+              :class="[
+                'transition duration-300 hover:text-cyan-500',
+                route.path.startsWith('/products')
+                  ? 'text-cyan-500 font-semibold'
+                  : 'text-gray-700'
+              ]"
             >
               Products
             </router-link>
@@ -63,13 +78,18 @@ onMounted(() => {
             <div class="relative">
               <router-link
                 to="/cart"
-                class="hover:text-cyan-500 transition duration-300"
+                :class="[
+                  'transition duration-300 hover:text-cyan-500',
+                  route.path === '/cart'
+                    ? 'text-cyan-500'
+                    : 'text-gray-700'
+                ]"
               >
                 <ShoppingCartIcon class="w-6 h-6" />
               </router-link>
 
               <span
-                v-if="cart.items.length > 0"
+                v-if="cart.totalItems > 0"
                 class="
                   absolute
                   -top-2
@@ -77,6 +97,7 @@ onMounted(() => {
                   bg-cyan-500
                   text-white
                   text-xs
+                  font-bold
                   px-2
                   py-0.5
                   rounded-full

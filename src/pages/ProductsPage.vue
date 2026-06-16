@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
+
 const products = ref([])
 const search = ref('')
 
@@ -60,8 +61,10 @@ onMounted(async () => {
                         product in products.filter((p) =>
                         p.title.toLowerCase().includes(search.toLowerCase())
                         )
+                        
                     "
                     :key="product.id"
+                     data-aos="fade-up"
                    class="
                     bg-white
                     rounded-3xl
