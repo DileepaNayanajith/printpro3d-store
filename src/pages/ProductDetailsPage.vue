@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '../stores/cartStore'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
 const cart = useCartStore()
+const toast = useToast()
 
 const product = ref<any>(null)
 
@@ -15,6 +17,14 @@ onMounted(async () => {
 
   product.value = await response.json()
 })
+const addProductToCart = () => {
+  console.log('CLICKED')
+  console.log(product.value)
+
+  cart.addToCart(product.value)
+
+  toast.success('Product added to cart!')
+}
 </script>
 
 <template>
@@ -108,13 +118,13 @@ onMounted(async () => {
               mt-4
             "
           >
-            <<span class="text-yellow-500 text-xl">
-                ⭐
-                </span>
+                    <span class="text-yellow-500 text-xl">
+                      ⭐
+                    </span>
 
-                <span class="font-medium">
-                {{ product.rating }}
-                </span>
+                    <span class="font-medium">
+                      {{ product.rating }}
+                    </span>
           </div>
 
           <!-- Price -->
@@ -142,7 +152,7 @@ onMounted(async () => {
 
           <!-- Add To Cart -->
           <button
-            @click="cart.addToCart(product)"
+            @click="addProductToCart"
             class="
               mt-8
               bg-black
