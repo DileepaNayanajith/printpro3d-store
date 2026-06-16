@@ -33,6 +33,8 @@ export const useCartStore = defineStore('cart', {
           quantity: 1,
         })
       }
+
+      this.saveCart()
     },
 
     increaseQuantity(id: number) {
@@ -43,6 +45,8 @@ export const useCartStore = defineStore('cart', {
       if (item) {
         item.quantity++
       }
+
+      this.saveCart()
     },
 
     decreaseQuantity(id: number) {
@@ -56,13 +60,33 @@ export const useCartStore = defineStore('cart', {
         item.quantity--
       } else {
         this.removeFromCart(id)
+        return
       }
+
+      this.saveCart()
     },
 
     removeFromCart(id: number) {
       this.items = this.items.filter(
         item => item.id !== id
       )
+
+      this.saveCart()
+    },
+
+    saveCart() {
+      localStorage.setItem(
+        'cart',
+        JSON.stringify(this.items)
+      )
+    },
+
+    loadCart() {
+      const savedCart = localStorage.getItem('cart')
+
+      if (savedCart) {
+        this.items = JSON.parse(savedCart)
+      }
     },
   },
 })

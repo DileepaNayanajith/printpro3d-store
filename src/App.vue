@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { useCartStore } from './stores/cartStore'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { onMounted } from 'vue'
 
 const cart = useCartStore()
+onMounted(() => {
+  cart.loadCart()
+})
 </script>
 
 <template>
