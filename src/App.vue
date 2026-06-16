@@ -1,10 +1,39 @@
+<script setup lang="ts">
+import { useCartStore } from './stores/cartStore'
+
+const cart = useCartStore()
+</script>
+
+
+
 <template>
   <div>
-    <nav class="bg-gray-900 text-white shadow-lg">
+          <nav
+          class="
+          sticky
+          top-0
+          z-50
+          bg-white/80
+          backdrop-blur-md
+          border-b
+          border-gray-200
+          "
+        >
       <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-center h-16">
 
-          <div class="text-2xl font-bold text-cyan-400">
+          <div
+              class="
+              text-3xl
+              font-extrabold
+              tracking-tight
+              bg-gradient-to-r
+              from-cyan-500
+              to-blue-600
+              bg-clip-text
+              text-transparent
+              "
+            >
             PRINTPRO3D
           </div>
 
@@ -22,6 +51,12 @@
             >
               Products
             </router-link>
+            <router-link
+               to="/cart"
+              class="hover:text-cyan-400 transition"
+>
+                Cart ({{ cart.items.length }})
+              </router-link>
           </div>
 
         </div>

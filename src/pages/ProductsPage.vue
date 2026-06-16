@@ -12,38 +12,79 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-8">
+  <div class="max-w-7xl mx-auto px-6 py-10">
 
-    <h1 class="text-4xl font-bold mb-8">
-      Our Products
-    </h1>
+   <div class="text-center mb-12">
+  <h1 class="text-5xl font-bold text-gray-900">
+    Our Products
+  </h1>
+
+  <p class="text-gray-500 mt-4">
+    Discover premium products crafted for modern lifestyles.
+  </p>
+</div>
 
     <div class="mb-8">
         <input
             v-model="search"
             type="text"
             placeholder="Search products..."
-            class="border p-3 rounded-lg w-full"
+            class="
+            w-full
+            p-4
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            shadow-sm
+            focus:outline-none
+            focus:ring-2
+            focus:ring-cyan-500
+"
             />
     </div>
 
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-    >
+                    <div
+                class="
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-2
+                    lg:grid-cols-3
+                    xl:grid-cols-4
+                    gap-8
+                "
+                >
 
-      <div
-  v-for="
-    product in products.filter((p) =>
-      p.title.toLowerCase().includes(search.toLowerCase())
-    )
-  "
-  :key="product.id"
-  class="bg-white rounded-xl shadow-lg overflow-hidden"
->
+                <div
+                     v-for="
+                        product in products.filter((p) =>
+                        p.title.toLowerCase().includes(search.toLowerCase())
+                        )
+                    "
+                    :key="product.id"
+                   class="
+                    bg-white
+                    rounded-3xl
+                    overflow-hidden
+                    shadow-md
+                    hover:shadow-2xl
+                    hover:-translate-y-2
+                    transition-all
+                    duration-300
+                    group
+                    "
+                    >
         <img
           :src="product.thumbnail"
           :alt="product.title"
-          class="w-full h-48 object-cover"
+          class="
+            w-full
+            h-56
+            object-cover
+            group-hover:scale-105
+            transition
+            duration-300
+            "
         >
 
         <div class="p-4">
@@ -52,12 +93,22 @@ onMounted(async () => {
             {{ product.title }}
           </h2>
 
-          <p class="text-gray-500 mt-2">
-            ${{ product.price }}
-          </p>
+                <p class="text-2xl font-bold text-black mt-3">
+                    ${{ product.price }}
+                    </p>
             <router-link
                 :to="`/products/${product.id}`"
-                class="inline-block mt-4 bg-cyan-500 text-white px-4 py-2 rounded"
+                class="
+                    inline-block
+                    mt-5
+                    bg-black
+                    text-white
+                    px-5
+                    py-2.5
+                    rounded-full
+                    hover:bg-gray-800
+                    transition
+                    "
                 >
                 View Product
             </router-link>
