@@ -3,6 +3,7 @@ import HomePage from '../pages/HomePage.vue'
 import ProductsPage from '../pages/ProductsPage.vue'
 import ProductDetailsPage from '../pages/ProductDetailsPage.vue'
 import CartPage from '../pages/CartPage.vue'
+import CheckoutPage from '../pages/CheckoutPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,6 +24,10 @@ const router = createRouter({
     path: '/cart',
     component: CartPage,
     },
+    {
+        path: '/checkout',
+        component: CheckoutPage
+            }
   ],
 })
 

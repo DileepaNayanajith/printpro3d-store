@@ -171,20 +171,23 @@ const cart = useCartStore()
     </span>
   </div>
 
-  <button
-    class="
-      w-full
-      mt-6
-      bg-black
-      text-white
-      py-3
-      rounded-full
-      hover:bg-gray-800
-      transition
-    "
-  >
-    Checkout
-  </button>
+<router-link
+  to="/checkout"
+  class="
+    block
+    w-full
+    mt-6
+    bg-black
+    text-white
+    py-3
+    rounded-full
+    hover:bg-gray-800
+    transition
+    text-center
+  "
+>
+  Checkout
+</router-link>
 
 </div>
 
