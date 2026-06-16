@@ -55,21 +55,23 @@ const cart = useCartStore()
             ${{ cart.totalPrice.toFixed(2) }}
           </span>
         </div>
-
-        <button
-          class="
-            w-full
-            mt-6
-            bg-black
-            text-white
-            py-3
-            rounded-full
-            hover:bg-gray-800
-            transition
-          "
-        >
-          Place Order
-        </button>
+<router-link
+  to="/success"
+  class="
+    block
+    w-full
+    mt-6
+    bg-black
+    text-white
+    py-3
+    rounded-full
+    hover:bg-gray-800
+    transition
+    text-center
+  "
+>
+  Place Order
+</router-link>
 
       </div>
 
