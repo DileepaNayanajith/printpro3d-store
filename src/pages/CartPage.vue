@@ -50,7 +50,11 @@ const cart = useCartStore()
       >
 
         <div class="flex justify-between items-center">
-
+             <img
+                :src="item.thumbnail"
+                :alt="item.title"
+                class="w-24 h-24 object-cover rounded-xl"
+              >
           <div>
             <h2 class="text-xl font-bold">
               {{ item.title }}
@@ -124,14 +128,65 @@ const cart = useCartStore()
       </div>
 
       <!-- Total -->
-      <div class="text-right mt-10">
+     <div
+  class="
+    mt-10
+    bg-white
+    shadow-lg
+    rounded-2xl
+    p-6
+    max-w-md
+    ml-auto
+  "
+>
 
-        <h2 class="text-4xl font-bold">
-          Total:
-          ${{ cart.totalPrice.toFixed(2) }}
-        </h2>
+  <h2 class="text-2xl font-bold mb-6">
+    Order Summary
+  </h2>
 
-      </div>
+  <div class="flex justify-between mb-3">
+    <span>Items</span>
+    <span>{{ cart.totalItems }}</span>
+  </div>
+
+  <div class="flex justify-between mb-3">
+    <span>Shipping</span>
+    <span>Free</span>
+  </div>
+
+  <hr class="my-4">
+
+  <div
+    class="
+      flex
+      justify-between
+      text-xl
+      font-bold
+    "
+  >
+    <span>Total</span>
+
+    <span>
+      ${{ cart.totalPrice.toFixed(2) }}
+    </span>
+  </div>
+
+  <button
+    class="
+      w-full
+      mt-6
+      bg-black
+      text-white
+      py-3
+      rounded-full
+      hover:bg-gray-800
+      transition
+    "
+  >
+    Checkout
+  </button>
+
+</div>
 
     </div>
 
