@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 
 const products = ref([])
 const search = ref('')
+const selectedCategory = ref('all')
 
 onMounted(async () => {
   const response = await fetch('https://dummyjson.com/products')
@@ -44,7 +45,69 @@ onMounted(async () => {
 "
             />
     </div>
+<div class="flex gap-3 mb-8 flex-wrap">
 
+  <button
+    @click="selectedCategory = 'all'"
+    :class="[
+      'px-4 py-2 rounded-full transition',
+      selectedCategory === 'all'
+        ? 'bg-black text-white'
+        : 'bg-gray-200 text-black'
+    ]"
+  >
+    All
+  </button>
+
+  <button
+    @click="selectedCategory = 'beauty'"
+    :class="[
+      'px-4 py-2 rounded-full transition',
+      selectedCategory === 'beauty'
+        ? 'bg-black text-white'
+        : 'bg-gray-200 text-black'
+    ]"
+  >
+    Beauty
+  </button>
+
+  <button
+    @click="selectedCategory = 'fragrances'"
+    :class="[
+      'px-4 py-2 rounded-full transition',
+      selectedCategory === 'fragrances'
+        ? 'bg-black text-white'
+        : 'bg-gray-200 text-black'
+    ]"
+  >
+    Fragrances
+  </button>
+
+  <button
+    @click="selectedCategory = 'furniture'"
+    :class="[
+      'px-4 py-2 rounded-full transition',
+      selectedCategory === 'furniture'
+        ? 'bg-black text-white'
+        : 'bg-gray-200 text-black'
+    ]"
+  >
+    Furniture
+  </button>
+
+  <button
+    @click="selectedCategory = 'groceries'"
+    :class="[
+      'px-4 py-2 rounded-full transition',
+      selectedCategory === 'groceries'
+        ? 'bg-black text-white'
+        : 'bg-gray-200 text-black'
+    ]"
+  >
+    Groceries
+  </button>
+
+</div>
                     <div
                 class="
                     grid
@@ -57,15 +120,18 @@ onMounted(async () => {
                 >
 
                 <div
-                     v-for="
-                        product in products.filter((p) =>
-                        p.title.toLowerCase().includes(search.toLowerCase())
-                        )
-                        
-                    "
-                    :key="product.id"
-                     data-aos="fade-up"
-                   class="
+                  v-for="
+                    product in products.filter((p) =>
+                      p.title.toLowerCase().includes(search.toLowerCase()) &&
+                      (
+                        selectedCategory === 'all' ||
+                        p.category === selectedCategory
+                      )
+                    )
+                  "
+                  :key="product.id"
+                  data-aos="fade-up"
+                  class="
                     bg-white
                     rounded-3xl
                     overflow-hidden
@@ -75,8 +141,8 @@ onMounted(async () => {
                     transition-all
                     duration-300
                     group
-                    "
-                    >
+                  "
+                >
         <img
           :src="product.thumbnail"
           :alt="product.title"

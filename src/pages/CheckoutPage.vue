@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useCartStore } from '../stores/cartStore'
+import { useRouter } from 'vue-router'
+
 
 const cart = useCartStore()
+const router = useRouter()
+
+
+const placeOrder = () => {
+  cart.clearCart()
+
+  router.push('/success')
+}
 </script>
 
 <template>
@@ -55,10 +65,9 @@ const cart = useCartStore()
             ${{ cart.totalPrice.toFixed(2) }}
           </span>
         </div>
-<router-link
-  to="/success"
+<button
+  @click="placeOrder"
   class="
-    block
     w-full
     mt-6
     bg-black
@@ -67,11 +76,10 @@ const cart = useCartStore()
     rounded-full
     hover:bg-gray-800
     transition
-    text-center
   "
 >
   Place Order
-</router-link>
+</button>
 
       </div>
 

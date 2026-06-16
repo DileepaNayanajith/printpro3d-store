@@ -88,5 +88,9 @@ export const useCartStore = defineStore('cart', {
         this.items = JSON.parse(savedCart)
       }
     },
+            clearCart() {
+          this.items = []
+          this.saveCart()
+        }
   },
 })
