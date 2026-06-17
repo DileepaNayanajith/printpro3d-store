@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '../stores/cartStore'
 import { useToast } from 'vue-toastification'
+import { HeartIcon } from '@heroicons/vue/24/outline'
+import { useWishlistStore } from '../stores/wishlistStore'
 
 const route = useRoute()
 const cart = useCartStore()
@@ -11,6 +13,11 @@ const toast = useToast()
 const product = ref<any>(null)
 const selectedImage = ref('')
 const relatedProducts = ref<any[]>([])
+const wishlist = useWishlistStore()
+
+const isWishlisted = (id: number) => {
+  return wishlist.isInWishlist(id)
+}
 
 onMounted(async () => {
   const response = await fetch(
@@ -85,7 +92,7 @@ const addProductToCart = () => {
     class="
       bg-gray-100
       rounded-3xl
-      p-6 md p-10
+      p-6 md:p-10
       flex
       justify-center
     "
@@ -200,22 +207,41 @@ const addProductToCart = () => {
           </p>
 
           <!-- Add To Cart -->
-          <button
-            @click="addProductToCart"
-            class="
-              mt-8
-              bg-black
-              text-white
-              px-8
-              py-4
-              rounded-full
-              hover:bg-gray-800
-              transition
-              text-lg
-            "
-          >
-            Add to Cart
-          </button>
+<div class="mt-8 flex items-center gap-3">
+
+  <button
+    @click="addProductToCart"
+    class="
+      bg-black
+      text-white
+      px-8
+      py-4
+      rounded-full
+      hover:bg-gray-800
+      transition
+      text-lg
+    "
+  >
+    Add to Cart
+  </button>
+
+  <button
+    @click="
+      isWishlisted(product.id)
+        ? wishlist.removeFromWishlist(product.id)
+        : wishlist.addToWishlist(product)
+    "
+    :class="[
+      'p-4 rounded-full border transition',
+      isWishlisted(product.id)
+        ? 'bg-red-500 text-white border-red-500'
+        : 'border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-500'
+    ]"
+  >
+    <HeartIcon class="w-6 h-6" />
+  </button>
+
+</div>
           <div class="mt-20">
 
   <h2 class="text-3xl font-bold mb-8">

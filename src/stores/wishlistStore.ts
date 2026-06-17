@@ -15,15 +15,18 @@ export const useWishlistStore = defineStore('wishlist', {
         item => item.id === product.id
       )
 
-      if (!exists) {
-        this.items.push(product)
-      }
+if (!exists) {
+  this.items.push(product)
+  this.saveWishlist()
+}
     },
 
     removeFromWishlist(id: number) {
       this.items = this.items.filter(
-        item => item.id !== id
-      )
+  item => item.id !== id
+)
+
+this.saveWishlist()
     },
 
     isInWishlist(id: number) {
@@ -31,5 +34,20 @@ export const useWishlistStore = defineStore('wishlist', {
         item => item.id === id
       )
     },
+    saveWishlist() {
+  localStorage.setItem(
+    'wishlist',
+    JSON.stringify(this.items)
+  )
+},
+
+loadWishlist() {
+  const savedWishlist =
+    localStorage.getItem('wishlist')
+
+  if (savedWishlist) {
+    this.items = JSON.parse(savedWishlist)
+  }
+},
   },
 })

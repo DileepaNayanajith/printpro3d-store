@@ -12,6 +12,7 @@ const route = useRoute()
 
 onMounted(() => {
   cart.loadCart()
+  wishlist.loadWishlist()
 })
 </script>
 
@@ -79,11 +80,12 @@ onMounted(() => {
             <!-- Wishlist -->
 <div class="relative">
 
-  <button
-    class="hover:text-red-500 transition duration-300"
-  >
-    <HeartIcon class="w-6 h-6" />
-  </button>
+ <router-link
+  to="/wishlist"
+  class="hover:text-red-500 transition duration-300"
+>
+  <HeartIcon class="w-6 h-6" />
+</router-link>
 
   <span
     v-if="wishlist.totalItems > 0"
