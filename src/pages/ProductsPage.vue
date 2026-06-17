@@ -1,15 +1,41 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,computed} from 'vue'
 
 
 const products = ref([])
 const search = ref('')
 const selectedCategory = ref('all')
+const sortBy = ref('default')
 
 onMounted(async () => {
   const response = await fetch('https://dummyjson.com/products')
   const data = await response.json()
   products.value = data.products
+})
+const filteredProducts = computed(() => {
+  let result = products.value.filter((p: any) =>
+    p.title.toLowerCase().includes(search.value.toLowerCase()) &&
+    (
+      selectedCategory.value === 'all' ||
+      p.category === selectedCategory.value
+    )
+  )
+
+  if (sortBy.value === 'priceLow') {
+    result.sort((a: any, b: any) => a.price - b.price)
+  }
+
+  if (sortBy.value === 'priceHigh') {
+    result.sort((a: any, b: any) => b.price - a.price)
+  }
+
+  if (sortBy.value === 'name') {
+    result.sort((a: any, b: any) =>
+      a.title.localeCompare(b.title)
+    )
+  }
+
+  return result
 })
 </script>
 
@@ -108,6 +134,38 @@ onMounted(async () => {
   </button>
 
 </div>
+              <div class="mb-8">
+
+  <select
+    v-model="sortBy"
+    class="
+      border
+      border-gray-300
+      rounded-xl
+      px-4
+      py-2
+      bg-white
+    "
+  >
+    <option value="default">
+      Featured
+    </option>
+
+    <option value="priceLow">
+      Price: Low to High
+    </option>
+
+    <option value="priceHigh">
+      Price: High to Low
+    </option>
+
+    <option value="name">
+      Name: A-Z
+    </option>
+
+  </select>
+
+</div>
                     <div
                 class="
                     grid
@@ -119,16 +177,8 @@ onMounted(async () => {
                 "
                 >
 
-                <div
-                  v-for="
-                    product in products.filter((p) =>
-                      p.title.toLowerCase().includes(search.toLowerCase()) &&
-                      (
-                        selectedCategory === 'all' ||
-                        p.category === selectedCategory
-                      )
-                    )
-                  "
+                      <div
+                  v-for="product in filteredProducts"
                   :key="product.id"
                   data-aos="fade-up"
                   class="
