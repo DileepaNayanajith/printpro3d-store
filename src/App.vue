@@ -3,8 +3,11 @@ import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from './stores/cartStore'
+import { HeartIcon } from '@heroicons/vue/24/outline'
+import { useWishlistStore } from './stores/wishlistStore'
 
 const cart = useCartStore()
+const wishlist = useWishlistStore()
 const route = useRoute()
 
 onMounted(() => {
@@ -73,9 +76,37 @@ onMounted(() => {
             >
               Products
             </router-link>
+            <!-- Wishlist -->
+<div class="relative">
 
+  <button
+    class="hover:text-red-500 transition duration-300"
+  >
+    <HeartIcon class="w-6 h-6" />
+  </button>
+
+  <span
+    v-if="wishlist.totalItems > 0"
+    class="
+      absolute
+      -top-2
+      -right-3
+      bg-red-500
+      text-white
+      text-xs
+      font-bold
+      px-2
+      py-0.5
+      rounded-full
+    "
+  >
+    {{ wishlist.totalItems }}
+  </span>
+
+</div>
             <!-- Cart -->
             <div class="relative">
+              
               <router-link
                 to="/cart"
                 :class="[
@@ -106,6 +137,7 @@ onMounted(() => {
                 {{ cart.totalItems }}
               </span>
             </div>
+            
 
           </div>
 
