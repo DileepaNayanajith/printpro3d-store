@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWishlistStore } from '../stores/wishlistStore'
+import { TrashIcon } from '@heroicons/vue/24/outline'
 
 const wishlist = useWishlistStore()
 </script>
@@ -57,20 +58,37 @@ const wishlist = useWishlistStore()
             ${{ product.price }}
           </p>
 
-          <router-link
-            :to="`/products/${product.id}`"
-            class="
-              inline-block
-              mt-4
-              bg-black
-              text-white
-              px-5
-              py-2
-              rounded-full
-            "
-          >
-            View Product
-          </router-link>
+<div class="flex items-center gap-3 mt-4">
+
+  <router-link
+    :to="`/products/${product.id}`"
+    class="
+      flex-1
+      bg-black
+      text-white
+      px-5
+      py-2
+      rounded-full
+      text-center
+      hover:bg-gray-800
+      transition
+    "
+  >
+    View Product
+  </router-link>
+
+  <button
+    @click="wishlist.removeFromWishlist(product.id)"
+    class="
+      text-red-500
+      hover:text-red-700
+      transition
+    "
+  >
+    <TrashIcon class="w-6 h-6" />
+  </button>
+
+</div>
 
         </div>
 
