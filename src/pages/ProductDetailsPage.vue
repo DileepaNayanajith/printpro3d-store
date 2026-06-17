@@ -9,13 +9,29 @@ const cart = useCartStore()
 const toast = useToast()
 
 const product = ref<any>(null)
+const selectedImage = ref('')
+const relatedProducts = ref<any[]>([])
 
 onMounted(async () => {
   const response = await fetch(
     `https://dummyjson.com/products/${route.params.id}`
   )
 
-  product.value = await response.json()
+  const data = await response.json()
+
+  product.value = data
+
+  selectedImage.value = data.thumbnail
+
+  const relatedResponse = await fetch(
+    `https://dummyjson.com/products/category/${data.category}`
+  )
+
+  const relatedData = await relatedResponse.json()
+
+  relatedProducts.value = relatedData.products.filter(
+    (item: any) => item.id !== data.id
+  )
 })
 const addProductToCart = () => {
   console.log('CLICKED')
@@ -61,22 +77,55 @@ const addProductToCart = () => {
       >
 
         <!-- Product Image -->
-        <div
-          class="
-            bg-gray-100
-            rounded-3xl
-            p-10
-            flex
-            justify-center
-            
-          "
-        >
-          <img
-            :src="product.thumbnail"
-            :alt="product.title"
-            class="w-full max-w-md"
-          >
-        </div>
+<!-- Product Image + Gallery -->
+<div>
+
+  <!-- Main Image -->
+  <div
+    class="
+      bg-gray-100
+      rounded-3xl
+      p-6 md p-10
+      flex
+      justify-center
+    "
+  >
+    <img
+      :src="selectedImage"
+      :alt="product.title"
+      class="
+        w-full
+        max-w-md
+        rounded-2xl
+      "
+    />
+  </div>
+
+  <!-- Thumbnail Gallery -->
+  <div
+    class="
+      flex
+      gap-3
+      mt-6
+      flex-wrap
+      justify-center
+    "
+  >
+    <img
+      v-for="image in product.images"
+      :key="image"
+      :src="image"
+      @click="selectedImage = image"
+      :class="[
+        'w-20 h-20 object-cover rounded-xl cursor-pointer border-2 transition-all',
+        selectedImage === image
+          ? 'border-cyan-500'
+          : 'border-transparent hover:border-cyan-500'
+      ]"
+    />
+  </div>
+
+</div>
 
         <!-- Product Info -->
         <div>
@@ -101,7 +150,7 @@ const addProductToCart = () => {
           <!-- Title -->
           <h1
             class="
-              text-5xl
+              text-3xl md:text-5xl
               font-bold
               text-gray-900
             "
@@ -130,7 +179,7 @@ const addProductToCart = () => {
           <!-- Price -->
           <p
             class="
-              text-4xl
+              text-2xl md:text-4xl
               font-bold
               mt-6
             "
@@ -167,6 +216,70 @@ const addProductToCart = () => {
           >
             Add to Cart
           </button>
+          <div class="mt-20">
+
+  <h2 class="text-3xl font-bold mb-8">
+    You May Also Like
+  </h2>
+
+  <div
+    class="
+      grid
+      grid-cols-1
+      md:grid-cols-2
+      lg:grid-cols-4
+      gap-6
+    "
+  >
+
+    <div
+      v-for="item in relatedProducts.slice(0, 4)"
+      :key="item.id"
+      class="
+        bg-white
+        rounded-2xl
+        shadow-md
+        overflow-hidden
+      "
+    >
+      <img
+        :src="item.thumbnail"
+        :alt="item.title"
+        class="w-full h-48 object-cover"
+      >
+
+      <div class="p-4">
+
+        <h3 class="font-bold">
+          {{ item.title }}
+        </h3>
+
+        <p class="mt-2 font-semibold">
+          ${{ item.price }}
+        </p>
+
+        <router-link
+          :to="`/products/${item.id}`"
+          class="
+            inline-block
+            mt-4
+            bg-black
+            text-white
+            px-4
+            py-2
+            rounded-full
+          "
+        >
+          View
+        </router-link>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
         </div>
 

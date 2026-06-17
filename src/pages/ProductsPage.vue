@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted,computed} from 'vue'
+import { HeartIcon } from '@heroicons/vue/24/outline'
+import { useWishlistStore } from '../stores/wishlistStore'
 
 
 const products = ref([])
 const search = ref('')
 const selectedCategory = ref('all')
 const sortBy = ref('default')
+const wishlist = useWishlistStore()
 
 onMounted(async () => {
   const response = await fetch('https://dummyjson.com/products')
@@ -37,6 +40,9 @@ const filteredProducts = computed(() => {
 
   return result
 })
+const isWishlisted = (id: number) => {
+  return wishlist.isInWishlist(id)
+}
 </script>
 
 <template>
@@ -215,23 +221,40 @@ const filteredProducts = computed(() => {
                 <p class="text-2xl font-bold text-black mt-3">
                     ${{ product.price }}
                     </p>
-            <router-link
-                :to="`/products/${product.id}`"
-                class="
-                    inline-block
-                    mt-5
-                    bg-black
-                    text-white
-                    px-5
-                    py-2.5
-                    rounded-full
-                    hover:bg-gray-800
-                    transition
-                    "
-                >
-                View Product
-            </router-link>
+            <div class="flex items-center justify-between mt-5">
 
+  <router-link
+    :to="`/products/${product.id}`"
+    class="
+      bg-black
+      text-white
+      px-5
+      py-2.5
+      rounded-full
+      hover:bg-gray-800
+      transition
+    "
+  >
+    View Product
+  </router-link>
+
+  <button
+    @click="
+      isWishlisted(product.id)
+        ? wishlist.removeFromWishlist(product.id)
+        : wishlist.addToWishlist(product)
+    "
+    :class="[
+      'transition',
+      isWishlisted(product.id)
+        ? 'text-red-500'
+        : 'text-gray-400 hover:text-red-500'
+    ]"
+  >
+    <HeartIcon class="w-7 h-7" />
+  </button>
+
+</div>
         </div>
 
       </div>
