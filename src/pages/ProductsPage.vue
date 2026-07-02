@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted,computed} from 'vue'
+import productsData from '../data/products.json'
 import { HeartIcon } from '@heroicons/vue/24/outline'
 import { useWishlistStore } from '../stores/wishlistStore'
 
@@ -10,10 +11,8 @@ const selectedCategory = ref('all')
 const sortBy = ref('default')
 const wishlist = useWishlistStore()
 
-onMounted(async () => {
-  const response = await fetch('https://dummyjson.com/products')
-  const data = await response.json()
-  products.value = data.products
+onMounted(() => {
+  products.value = productsData
 })
 const filteredProducts = computed(() => {
   let result = products.value.filter((p: any) =>
@@ -219,7 +218,7 @@ const isWishlisted = (id: number) => {
           </h2>
 
                 <p class="text-2xl font-bold text-black mt-3">
-                    ${{ product.price }}
+                    Rs. {{ product.price.toLocaleString() }}
                     </p>
             <div class="flex items-center justify-between mt-5">
 
