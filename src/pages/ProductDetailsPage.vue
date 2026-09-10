@@ -1,333 +1,92 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCartStore } from '../stores/cartStore'
+import { ArrowLeftIcon, CheckCircleIcon, HeartIcon, ShoppingBagIcon, TruckIcon } from '@heroicons/vue/24/outline'
 import { useToast } from 'vue-toastification'
-import { HeartIcon } from '@heroicons/vue/24/outline'
+import { useCartStore } from '../stores/cartStore'
 import { useWishlistStore } from '../stores/wishlistStore'
+import productsData from '../data/products.json'
 
 const route = useRoute()
 const cart = useCartStore()
-const toast = useToast()
-
-const product = ref<any>(null)
-const selectedImage = ref('')
-const relatedProducts = ref<any[]>([])
 const wishlist = useWishlistStore()
+const toast = useToast()
+const product = computed(() => productsData.find(item => item.id === Number(route.params.id)))
+const relatedProducts = computed(() => productsData.filter(item => item.category === product.value?.category && item.id !== product.value?.id).slice(0, 4))
 
-const isWishlisted = (id: number) => {
-  return wishlist.isInWishlist(id)
+const descriptions: Record<number, string> = {
+  1: 'A feature-packed camera drone built for smooth flights, stable hovering and exciting aerial views.',
+  2: 'A compact camera drone paired with a display remote for a more convenient flying experience.',
+  3: 'A lightweight foldable drone that makes aerial fun accessible for beginners and casual pilots.',
+  4: 'A portable dual-camera drone with a complete kit, ideal for learning, travel and everyday flying.',
+  5: 'A versatile foldable camera drone offering stable control and a travel-friendly design.',
+  6: 'A detailed 1:12 scale 4WD Defender-style crawler made for realistic off-road RC adventures.',
+  7: 'A rugged Toyota LC79-style RC pickup with off-road character and realistic scale detailing.',
 }
 
-onMounted(async () => {
-  const response = await fetch(
-    `https://dummyjson.com/products/${route.params.id}`
-  )
-
-  const data = await response.json()
-
-  product.value = data
-
-  selectedImage.value = data.thumbnail
-
-  const relatedResponse = await fetch(
-    `https://dummyjson.com/products/category/${data.category}`
-  )
-
-  const relatedData = await relatedResponse.json()
-
-  relatedProducts.value = relatedData.products.filter(
-    (item: any) => item.id !== data.id
-  )
-})
-const addProductToCart = () => {
-  console.log('CLICKED')
-  console.log(product.value)
-
+const addToCart = () => {
+  if (!product.value) return
   cart.addToCart(product.value)
+  toast.success(`${product.value.title} added to cart`)
+}
 
-  toast.success('Product added to cart!')
+const toggleWishlist = () => {
+  if (!product.value) return
+  wishlist.isInWishlist(product.value.id) ? wishlist.removeFromWishlist(product.value.id) : wishlist.addToWishlist(product.value)
 }
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 py-10">
-
-    <div v-if="product">
-
-      <!-- Back Button -->
-      <router-link
-        to="/products"
-        class="
-          inline-block
-          mb-10
-          bg-gray-900
-          text-white
-          px-5
-          py-3
-          rounded-full
-          hover:bg-gray-800
-          transition
-        "
-      >
-        ← Back to Products
+  <div class="min-h-screen bg-slate-950 px-5 py-10 text-white sm:px-8 lg:py-16">
+    <div v-if="product" class="mx-auto max-w-7xl">
+      <router-link to="/products" class="inline-flex items-center gap-2 text-sm font-bold text-slate-400 transition hover:text-cyan-400">
+        <ArrowLeftIcon class="h-4 w-4" /> Back to products
       </router-link>
 
-      <!-- Product Layout -->
-      <div
-        class="
-          grid
-          md:grid-cols-2
-          gap-16
-          items-center
-        "
-      >
-
-        <!-- Product Image -->
-<!-- Product Image + Gallery -->
-<div>
-
-  <!-- Main Image -->
-  <div
-    class="
-      bg-gray-100
-      rounded-3xl
-      p-6 md:p-10
-      flex
-      justify-center
-    "
-  >
-    <img
-      :src="selectedImage"
-      :alt="product.title"
-      class="
-        w-full
-        max-w-md
-        rounded-2xl
-      "
-    />
-  </div>
-
-  <!-- Thumbnail Gallery -->
-  <div
-    class="
-      flex
-      gap-3
-      mt-6
-      flex-wrap
-      justify-center
-    "
-  >
-    <img
-      v-for="image in product.images"
-      :key="image"
-      :src="image"
-      @click="selectedImage = image"
-      :class="[
-        'w-20 h-20 object-cover rounded-xl cursor-pointer border-2 transition-all',
-        selectedImage === image
-          ? 'border-cyan-500'
-          : 'border-transparent hover:border-cyan-500'
-      ]"
-    />
-  </div>
-
-</div>
-
-        <!-- Product Info -->
-        <div>
-
-          <!-- Discount Badge -->
-          <div
-            class="
-              inline-block
-              bg-red-500
-              text-white
-              px-3
-              py-1
-              rounded-full
-              text-sm
-              font-semibold
-              mb-4
-            "
-          >
-            {{ product.discountPercentage }}% OFF
-          </div>
-
-          <!-- Title -->
-          <h1
-            class="
-              text-3xl md:text-5xl
-              font-bold
-              text-gray-900
-            "
-          >
-            {{ product.title }}
-          </h1>
-
-          <!-- Rating -->
-          <div
-            class="
-              flex
-              items-center
-              gap-2
-              mt-4
-            "
-          >
-                    <span class="text-yellow-500 text-xl">
-                      ⭐
-                    </span>
-
-                    <span class="font-medium">
-                      {{ product.rating }}
-                    </span>
-          </div>
-
-          <!-- Price -->
-          <p
-            class="
-              text-2xl md:text-4xl
-              font-bold
-              mt-6
-            "
-          >
-            ${{ product.price }}
-          </p>
-
-          <!-- Description -->
-          <p
-            class="
-              mt-6
-              text-gray-600
-              leading-relaxed
-              text-lg
-            "
-          >
-            {{ product.description }}
-          </p>
-
-          <!-- Add To Cart -->
-<div class="mt-8 flex items-center gap-3">
-
-  <button
-    @click="addProductToCart"
-    class="
-      bg-black
-      text-white
-      px-8
-      py-4
-      rounded-full
-      hover:bg-gray-800
-      transition
-      text-lg
-    "
-  >
-    Add to Cart
-  </button>
-
-  <button
-    @click="
-      isWishlisted(product.id)
-        ? wishlist.removeFromWishlist(product.id)
-        : wishlist.addToWishlist(product)
-    "
-    :class="[
-      'p-4 rounded-full border transition',
-      isWishlisted(product.id)
-        ? 'bg-red-500 text-white border-red-500'
-        : 'border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-500'
-    ]"
-  >
-    <HeartIcon class="w-6 h-6" />
-  </button>
-
-</div>
-          <div class="mt-20">
-
-  <h2 class="text-3xl font-bold mb-8">
-    You May Also Like
-  </h2>
-
-  <div
-    class="
-      grid
-      grid-cols-1
-      md:grid-cols-2
-      lg:grid-cols-4
-      gap-6
-    "
-  >
-
-    <div
-      v-for="item in relatedProducts.slice(0, 4)"
-      :key="item.id"
-      class="
-        bg-white
-        rounded-2xl
-        shadow-md
-        overflow-hidden
-      "
-    >
-      <img
-        :src="item.thumbnail"
-        :alt="item.title"
-        class="w-full h-48 object-cover"
-      >
-
-      <div class="p-4">
-
-        <h3 class="font-bold">
-          {{ item.title }}
-        </h3>
-
-        <p class="mt-2 font-semibold">
-          ${{ item.price }}
-        </p>
-
-        <router-link
-          :to="`/products/${item.id}`"
-          class="
-            inline-block
-            mt-4
-            bg-black
-            text-white
-            px-4
-            py-2
-            rounded-full
-          "
-        >
-          View
-        </router-link>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
+      <section class="mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-white p-5 sm:p-9" data-aos="fade-right">
+          <img :src="product.thumbnail" :alt="product.title" class="aspect-square h-full w-full rounded-2xl object-contain" />
         </div>
 
-      </div>
+        <div class="lg:sticky lg:top-28" data-aos="fade-left">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="rounded-full bg-cyan-400 px-3 py-1.5 text-xs font-black text-slate-950">{{ product.badge }}</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold capitalize text-slate-300">{{ product.category.replace('-', ' ') }}</span>
+          </div>
+          <h1 class="mt-6 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">{{ product.title }}</h1>
+          <p class="mt-5 text-3xl font-black text-cyan-400">Rs. {{ product.price.toLocaleString() }}</p>
+          <p class="mt-6 max-w-xl text-lg leading-8 text-slate-400">{{ descriptions[product.id] }}</p>
 
+          <div class="mt-7 flex items-center gap-2 text-sm font-bold text-emerald-400">
+            <CheckCircleIcon class="h-5 w-5" /> In stock — {{ product.stock }} available
+          </div>
+
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <button @click="addToCart" class="primary-button flex-1"><ShoppingBagIcon class="h-5 w-5" /> Add to cart</button>
+            <button @click="toggleWishlist" :class="['inline-flex h-14 items-center justify-center gap-2 rounded-full border px-7 font-bold transition', wishlist.isInWishlist(product.id) ? 'border-rose-500 bg-rose-500 text-white' : 'border-white/15 text-white hover:border-rose-400 hover:text-rose-400']">
+              <HeartIcon class="h-5 w-5" /> {{ wishlist.isInWishlist(product.id) ? 'Saved' : 'Save' }}
+            </button>
+          </div>
+
+          <div class="mt-8 grid gap-3 sm:grid-cols-2">
+            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"><TruckIcon class="h-6 w-6 text-cyan-400" /><div><p class="text-sm font-bold">Islandwide delivery</p><p class="text-xs text-slate-500">Securely packed</p></div></div>
+            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"><CheckCircleIcon class="h-6 w-6 text-cyan-400" /><div><p class="text-sm font-bold">Quality checked</p><p class="text-xs text-slate-500">Local support</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="relatedProducts.length" class="mt-24 border-t border-white/10 pt-16">
+        <p class="section-kicker">Keep exploring</p>
+        <h2 class="mt-3 text-3xl font-black">You may also like</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <router-link v-for="item in relatedProducts" :key="item.id" :to="`/products/${item.id}`" class="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-cyan-400/30">
+            <div class="aspect-square bg-white p-3"><img :src="item.thumbnail" :alt="item.title" class="h-full w-full rounded-2xl object-contain transition duration-300 group-hover:scale-105" /></div>
+            <div class="p-5"><h3 class="font-bold text-white">{{ item.title }}</h3><p class="mt-2 font-black text-cyan-400">Rs. {{ item.price.toLocaleString() }}</p></div>
+          </router-link>
+        </div>
+      </section>
     </div>
 
-    <!-- Loading State -->
-    <div
-      v-else
-      class="
-        flex
-        justify-center
-        items-center
-        h-96
-        text-2xl
-        font-semibold
-        text-gray-500
-      "
-    >
-      Loading Product...
-    </div>
-
+    <div v-else class="mx-auto max-w-2xl py-32 text-center"><h1 class="text-3xl font-black">Product not found</h1><router-link to="/products" class="primary-button mt-8">Browse products</router-link></div>
   </div>
 </template>

@@ -1,60 +1,9 @@
 [
-  {
-  "id": 1,
-  "title": "JS39P Drone",
-  "price": 15500,
-  "oldPrice": 17500,
-  "thumbnail": "/products/js39p.jpg",
-  "images": [
-    "/products/js39p-1.jpg",
-    "/products/js39p-2.jpg",
-    "/products/js39p-3.jpg"
-  ],
-  "category": "drones",
-  "stock": 12,
-  "brand": "PrintPro3D",
-  "sku": "JS39P",
-  "description": "Professional dual camera drone...",
-  "features": [
-    "Dual Camera",
-    "Altitude Hold",
-    "Headless Mode",
-    "One Key Return"
-  ],
-  "specifications": {
-    "Battery": "1800mAh",
-    "Flight Time": "15 min",
-    "Range": "120m",
-    "Charging Time": "120 min"
-  }
-}
-  ,  {
-  "id": 2,
-  "title": "Drone Air (Display Remote)",
-  "price": 13500,
-  "oldPrice": 14500,
-  "thumbnail": "/products/droneair.webp",
-
-  "images": [
-    "/products/droneair.webp"
-  ],
-
-  "category": "drones",
-  "stock": 8,
-  "brand": "PrintPro3D",
-  "sku": "DRONEAIR01",
-
-  "description": "Drone Air with display remote controller.",
-
-  "features": [
-    "Display Remote",
-    "Altitude Hold",
-    "One Key Return"
-  ],
-
-  "specifications": {
-    "Battery": "1800mAh",
-    "Flight Time": "12 min",
-    "Range": "100m"
-  }
-}
+  { "id": 1, "title": "JS39P Drone", "price": 15500, "thumbnail": "/products/js39p.jpg", "category": "drones", "stock": 6, "badge": "Popular" },
+  { "id": 2, "title": "Drone Air (Display Remote)", "price": 13500, "thumbnail": "/products/droneair.webp", "category": "drones", "stock": 4, "badge": "Display Remote" },
+  { "id": 3, "title": "E88 Drone", "price": 5750, "thumbnail": "/products/e88-drone.jpg", "category": "drones", "stock": 12, "badge": "Best Value" },
+  { "id": 4, "title": "E99 Max Drone", "price": 9500, "thumbnail": "/products/e99-max.png", "category": "drones", "stock": 8, "badge": "New" },
+  { "id": 5, "title": "K13 Max Drone", "price": 8500, "thumbnail": "/products/k13-max.jpg", "category": "drones", "stock": 7, "badge": "Hot" },
+  { "id": 6, "title": "D99S Defender RC Crawler", "price": 18500, "thumbnail": "/products/d99s-defender.jpg", "category": "rc-cars", "stock": 3, "badge": "4WD" },
+  { "id": 7, "title": "MN82T RC Truck", "price": 18500, "thumbnail": "/products/mn82-t.jpg", "category": "rc-cars", "stock": 5, "badge": "Off-road" }
+]
