@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { Bars3Icon, HeartIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from './stores/cartStore'
 import { useWishlistStore } from './stores/wishlistStore'
+import LiveChat from './components/LiveChat.vue'
 
 const cart = useCartStore()
 const wishlist = useWishlistStore()
@@ -48,6 +49,7 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
       </div>
     </nav>
     <main><router-view /></main>
+    <LiveChat />
     <footer class="border-t border-white/10 bg-slate-950">
       <div class="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
         <div><p class="text-xl font-black">PRINTPRO<span class="text-cyan-400">3D</span></p><p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">Premium 3D printing, RC products and engineering solutions built for makers in Sri Lanka.</p></div>
