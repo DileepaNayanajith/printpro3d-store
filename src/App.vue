@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Bars3Icon, HeartIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from './stores/cartStore'
@@ -13,7 +13,8 @@ const compare = useCompareStore()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 const year = new Date().getFullYear()
-const navLinks = [{ label: 'Home', to: '/' }, { label: 'Products', to: '/products' }, { label: 'Compare', to: '/compare' }, { label: 'About', to: '/about' }]
+const navLinks = [{ label: 'Home', to: '/' }, { label: 'Products', to: '/products' }, { label: 'Custom Print', to: '/custom-print' }, { label: 'Compare', to: '/compare' }, { label: 'About', to: '/about' }]
+const isAdminArea = computed(() => route.path.startsWith('/admin'))
 
 onMounted(() => { cart.loadCart(); wishlist.loadWishlist(); compare.load() })
 watch(() => route.fullPath, () => {
@@ -25,7 +26,7 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
 
 <template>
   <div class="min-h-screen bg-slate-950 text-white">
-    <nav class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <nav v-if="!isAdminArea" class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
       <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
         <router-link to="/" class="flex items-center gap-3" aria-label="PRINTPRO3D home">
           <span class="grid h-10 w-10 place-items-center rounded-xl bg-cyan-400 font-black text-slate-950">P3</span>
@@ -51,11 +52,11 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
       </div>
     </nav>
     <main><router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" /></transition></router-view></main>
-    <LiveChat />
-    <footer class="border-t border-white/10 bg-slate-950">
+    <LiveChat v-if="!isAdminArea" />
+    <footer v-if="!isAdminArea" class="border-t border-white/10 bg-slate-950">
       <div class="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
         <div><p class="text-xl font-black">PRINTPRO<span class="text-cyan-400">3D</span></p><p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">Premium 3D printing, RC products and engineering solutions built for makers in Sri Lanka.</p></div>
-        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Explore</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/products" class="hover:text-cyan-400">Products</router-link><router-link to="/compare" class="hover:text-cyan-400">Compare</router-link><router-link to="/about" class="hover:text-cyan-400">About</router-link><router-link to="/contact" class="hover:text-cyan-400">Contact</router-link></div></div>
+        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Explore</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/products" class="hover:text-cyan-400">Products</router-link><router-link to="/custom-print" class="hover:text-cyan-400">Custom STL Print</router-link><router-link to="/compare" class="hover:text-cyan-400">Compare</router-link><router-link to="/about" class="hover:text-cyan-400">About</router-link><router-link to="/contact" class="hover:text-cyan-400">Contact</router-link></div></div>
         <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Policies</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/terms" class="hover:text-cyan-400">Terms & Conditions</router-link><router-link to="/warranty" class="hover:text-cyan-400">Warranty Policy</router-link></div></div>
       </div>
       <div class="border-t border-white/10 py-6 text-center text-xs text-slate-500">© {{ year }} PRINTPRO3D. All rights reserved.</div>

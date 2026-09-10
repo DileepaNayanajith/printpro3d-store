@@ -12,6 +12,8 @@ import WarrantyPage from '../pages/WarrantyPage.vue'
 import ComparePage from '../pages/ComparePage.vue'
 import ContactPage from '../pages/ContactPage.vue'
 import NotFoundPage from '../pages/NotFoundPage.vue'
+import AdminPage from '../pages/AdminPage.vue'
+import AdminLoginPage from '../pages/AdminLoginPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -45,6 +47,19 @@ const router = createRouter({
       component: ContactPage,
     },
     {
+      path: '/custom-print',
+      component: () => import('../pages/CustomPrintPage.vue'),
+    },
+    {
+      path: '/admin',
+      component: AdminPage,
+      meta: { requiresAdmin: true },
+    },
+    {
+      path: '/admin/login',
+      component: AdminLoginPage,
+    },
+    {
       path: '/products/:id',
       component: ProductDetailsPage,
     },
@@ -69,6 +84,12 @@ const router = createRouter({
   component: NotFoundPage,
 },
   ],
+})
+
+router.beforeEach((to) => {
+  const isAdmin = localStorage.getItem('printpro3d_admin_session') === 'authenticated'
+  if (to.meta.requiresAdmin && !isAdmin) return { path: '/admin/login', query: { redirect: to.fullPath } }
+  if (to.path === '/admin/login' && isAdmin) return '/admin'
 })
 
 export default router
