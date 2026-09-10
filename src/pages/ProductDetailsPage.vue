@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowLeftIcon, CheckCircleIcon, HeartIcon, ShoppingBagIcon, TruckIcon } from '@heroicons/vue/24/outline'
 import { useToast } from 'vue-toastification'
 import { useCartStore } from '../stores/cartStore'
 import { useWishlistStore } from '../stores/wishlistStore'
 import productsData from '../data/products.json'
+import { useRecentStore } from '../stores/recentStore'
 
 const route = useRoute()
 const cart = useCartStore()
 const wishlist = useWishlistStore()
 const toast = useToast()
+const recent = useRecentStore()
 const product = computed(() => productsData.find(item => item.id === Number(route.params.id)))
 const relatedProducts = computed(() => productsData.filter(item => item.category === product.value?.category && item.id !== product.value?.id).slice(0, 4))
+const recentlyViewed = computed(() => recent.items.filter(item => item.id !== product.value?.id).slice(0, 4))
+recent.load()
+watch(product, value => { if (value) recent.add(value) }, { immediate: true })
 
 const descriptions: Record<number, string> = {
   1: 'A feature-packed camera drone built for smooth flights, stable hovering and exciting aerial views.',
@@ -83,6 +88,13 @@ const toggleWishlist = () => {
             <div class="aspect-square bg-white p-3"><img :src="item.thumbnail" :alt="item.title" class="h-full w-full rounded-2xl object-contain transition duration-300 group-hover:scale-105" /></div>
             <div class="p-5"><h3 class="font-bold text-white">{{ item.title }}</h3><p class="mt-2 font-black text-cyan-400">Rs. {{ item.price.toLocaleString() }}</p></div>
           </router-link>
+        </div>
+      </section>
+
+      <section v-if="recentlyViewed.length" class="mt-20 border-t border-white/10 pt-14">
+        <p class="section-kicker">Your history</p><h2 class="mt-3 text-3xl font-black">Recently viewed</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <router-link v-for="item in recentlyViewed" :key="`recent-${item.id}`" :to="`/products/${item.id}`" class="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 transition hover:border-cyan-400/30"><div class="h-20 w-20 shrink-0 rounded-xl bg-white p-1"><img :src="item.thumbnail" :alt="item.title" class="h-full w-full rounded-lg object-contain" /></div><div class="min-w-0"><h3 class="truncate text-sm font-bold">{{ item.title }}</h3><p class="mt-1 text-sm font-black text-cyan-400">Rs. {{ item.price.toLocaleString() }}</p></div></router-link>
         </div>
       </section>
     </div>

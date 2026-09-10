@@ -5,15 +5,17 @@ import { Bars3Icon, HeartIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/vue
 import { useCartStore } from './stores/cartStore'
 import { useWishlistStore } from './stores/wishlistStore'
 import LiveChat from './components/LiveChat.vue'
+import { useCompareStore } from './stores/compareStore'
 
 const cart = useCartStore()
 const wishlist = useWishlistStore()
+const compare = useCompareStore()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
 const year = new Date().getFullYear()
-const navLinks = [{ label: 'Home', to: '/' }, { label: 'Products', to: '/products' }]
+const navLinks = [{ label: 'Home', to: '/' }, { label: 'Products', to: '/products' }, { label: 'Compare', to: '/compare' }, { label: 'About', to: '/about' }]
 
-onMounted(() => { cart.loadCart(); wishlist.loadWishlist() })
+onMounted(() => { cart.loadCart(); wishlist.loadWishlist(); compare.load() })
 watch(() => route.fullPath, () => {
   mobileMenuOpen.value = false
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -48,13 +50,13 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
         <router-link v-for="link in navLinks" :key="link.to" :to="link.to" class="block rounded-xl px-4 py-3 font-semibold text-slate-200 hover:bg-white/5 hover:text-cyan-400">{{ link.label }}</router-link>
       </div>
     </nav>
-    <main><router-view /></main>
+    <main><router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" /></transition></router-view></main>
     <LiveChat />
     <footer class="border-t border-white/10 bg-slate-950">
       <div class="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
         <div><p class="text-xl font-black">PRINTPRO<span class="text-cyan-400">3D</span></p><p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">Premium 3D printing, RC products and engineering solutions built for makers in Sri Lanka.</p></div>
-        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Explore</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/products" class="hover:text-cyan-400">Products</router-link><router-link to="/wishlist" class="hover:text-cyan-400">Wishlist</router-link><router-link to="/cart" class="hover:text-cyan-400">Cart</router-link></div></div>
-        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Why us</p><p class="mt-4 text-sm leading-6 text-slate-400">Carefully selected products, local support and secure islandwide delivery.</p></div>
+        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Explore</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/products" class="hover:text-cyan-400">Products</router-link><router-link to="/compare" class="hover:text-cyan-400">Compare</router-link><router-link to="/about" class="hover:text-cyan-400">About</router-link><router-link to="/contact" class="hover:text-cyan-400">Contact</router-link></div></div>
+        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Policies</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-300"><router-link to="/terms" class="hover:text-cyan-400">Terms & Conditions</router-link><router-link to="/warranty" class="hover:text-cyan-400">Warranty Policy</router-link></div></div>
       </div>
       <div class="border-t border-white/10 py-6 text-center text-xs text-slate-500">© {{ year }} PRINTPRO3D. All rights reserved.</div>
     </footer>

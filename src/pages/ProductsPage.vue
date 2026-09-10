@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { HeartIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
+import { HeartIcon, MagnifyingGlassIcon, ScaleIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import productsData from '../data/products.json'
 import { useWishlistStore } from '../stores/wishlistStore'
 import { useCartStore } from '../stores/cartStore'
 import { useToast } from 'vue-toastification'
+import { useRoute } from 'vue-router'
+import { useCompareStore } from '../stores/compareStore'
 
 type Product = { id: number; title: string; price: number; thumbnail: string; category: string; stock: number; badge: string }
 const products = ref<Product[]>(productsData)
 const search = ref('')
-const selectedCategory = ref('all')
+const route = useRoute()
+const selectedCategory = ref(typeof route.query.category === 'string' ? route.query.category : 'all')
 const sortBy = ref('featured')
 const wishlist = useWishlistStore()
 const cart = useCartStore()
 const toast = useToast()
+const compare = useCompareStore()
+const loadedImages = ref<number[]>([])
 const categories = computed(() => ['all', ...new Set(products.value.map(product => product.category))])
 
 const filteredProducts = computed(() => {
@@ -35,6 +40,12 @@ const toggleWishlist = (product: Product) => wishlist.isInWishlist(product.id)
 const addToCart = (product: Product) => {
   cart.addToCart(product)
   toast.success(`${product.title} added to cart`)
+}
+
+const toggleCompare = (product: Product) => {
+  if (!compare.has(product.id) && compare.items.length >= 3) return toast.warning('You can compare up to 3 products')
+  const added = compare.toggle(product)
+  toast.info(added ? `${product.title} added to compare` : `${product.title} removed from compare`)
 }
 </script>
 
@@ -64,13 +75,14 @@ const addToCart = (product: Product) => {
       <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <article v-for="(product, index) in filteredProducts" :key="product.id" class="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition duration-300 hover:-translate-y-1 hover:border-cyan-400/30" data-aos="fade-up" :data-aos-delay="index * 70">
           <router-link :to="`/products/${product.id}`" class="relative block aspect-square overflow-hidden bg-slate-900">
-            <img :src="product.thumbnail" :alt="product.title" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+            <div v-if="!loadedImages.includes(product.id)" class="absolute inset-0 animate-pulse bg-slate-800"></div>
+            <img :src="product.thumbnail" :alt="product.title" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" @load="loadedImages.push(product.id)" />
             <span class="absolute left-4 top-4 rounded-full bg-cyan-400 px-3 py-1.5 text-xs font-black text-slate-950">{{ product.badge }}</span>
           </router-link>
           <div class="p-5">
             <div class="flex items-start justify-between gap-3">
               <div><h2 class="font-bold text-white">{{ product.title }}</h2><p class="mt-2 text-xl font-black text-cyan-400">Rs. {{ product.price.toLocaleString() }}</p><p class="mt-1 text-xs font-semibold text-emerald-400">{{ product.stock }} in stock</p></div>
-              <button @click="toggleWishlist(product)" :aria-label="`Wishlist ${product.title}`" :class="['grid h-10 w-10 shrink-0 place-items-center rounded-full border transition', wishlist.isInWishlist(product.id) ? 'border-rose-500 bg-rose-500 text-white' : 'border-white/10 text-slate-400 hover:border-rose-400 hover:text-rose-400']"><HeartIcon class="h-5 w-5" /></button>
+              <div class="flex gap-2"><button @click="toggleCompare(product)" :aria-label="`Compare ${product.title}`" :class="['grid h-10 w-10 shrink-0 place-items-center rounded-full border transition', compare.has(product.id) ? 'border-cyan-400 bg-cyan-400 text-slate-950' : 'border-white/10 text-slate-400 hover:border-cyan-400 hover:text-cyan-400']"><ScaleIcon class="h-5 w-5" /></button><button @click="toggleWishlist(product)" :aria-label="`Wishlist ${product.title}`" :class="['grid h-10 w-10 shrink-0 place-items-center rounded-full border transition', wishlist.isInWishlist(product.id) ? 'border-rose-500 bg-rose-500 text-white' : 'border-white/10 text-slate-400 hover:border-rose-400 hover:text-rose-400']"><HeartIcon class="h-5 w-5" /></button></div>
             </div>
             <div class="mt-5 grid grid-cols-[1fr_auto] gap-2">
               <router-link :to="`/products/${product.id}`" class="rounded-full border border-white/15 px-4 py-3 text-center text-sm font-black text-white transition hover:border-cyan-400 hover:text-cyan-400">View details</router-link>
