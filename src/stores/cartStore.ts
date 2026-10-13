@@ -19,7 +19,8 @@ export const useCartStore = defineStore('cart', {
     addToCart(input: {id:number;color?:string}, quantity=1) {
       const product=catalog.find(p=>p.id===input.id)
       if (!product || !Number.isInteger(quantity) || quantity<1) return false
-      const color=input.color || ''
+      // Filament colours are separate SKUs; only rack variants need a selected colour.
+      const color=product.colors ? input.color || '' : ''
       if (product.colors ? !product.colors.includes(color) : color!=='') return false
       const total=this.items.filter(p=>p.id===product.id).reduce((n,p)=>n+p.quantity,0)
       if (total+quantity>Math.min(product.stock ?? 99,99)) return false
