@@ -18,6 +18,7 @@ import AdminLoginPage from '../pages/AdminLoginPage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/account', component: () => import('../pages/AccountPage.vue') },
     {
       path: '/',
       component: HomePage,

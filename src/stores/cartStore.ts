@@ -1,96 +1,52 @@
 import { defineStore } from 'pinia'
+import catalog from '../data/products.json'
+import { unitPrice } from '../lib/pricing'
 
+type CartItem = { id:number; title:string; sku:string; price:number; thumbnail:string; category:string; stock:number|null; badge:string; quantity:number; color:string }
 export const useCartStore = defineStore('cart', {
-  state: () => ({
-    items: [] as any[],
-  }),
-
+  state: () => ({ items: [] as CartItem[] }),
   getters: {
-    totalItems: (state) =>
-      state.items.reduce(
-        (total, item) => total + item.quantity,
-        0
-      ),
-
-    totalPrice: (state) =>
-      state.items.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      ),
+    totalItems: state => state.items.reduce((total,item)=>total+item.quantity,0),
+    totalPrice: state => state.items.reduce((total,item)=>total+item.price*item.quantity,0),
   },
-
   actions: {
-    addToCart(product: any) {
-      const existingItem = this.items.find(
-        item => item.id === product.id
-      )
-
-      if (existingItem) {
-        existingItem.quantity++
-      } else {
-        this.items.push({
-          ...product,
-          quantity: 1,
-        })
+    reprice() {
+      for (const item of this.items) {
+        const product=catalog.find(p=>p.id===item.id)!
+        item.price=unitPrice(product,this.items.filter(p=>p.id===item.id).reduce((n,p)=>n+p.quantity,0))
       }
-
-      this.saveCart()
     },
-
-    increaseQuantity(id: number) {
-      const item = this.items.find(
-        item => item.id === id
-      )
-
-      if (item) {
-        item.quantity++
-      }
-
-      this.saveCart()
+    addToCart(input: {id:number;color?:string}, quantity=1) {
+      const product=catalog.find(p=>p.id===input.id)
+      if (!product || !Number.isInteger(quantity) || quantity<1) return false
+      const color=input.color || ''
+      if (product.colors ? !product.colors.includes(color) : color!=='') return false
+      const total=this.items.filter(p=>p.id===product.id).reduce((n,p)=>n+p.quantity,0)
+      if (total+quantity>Math.min(product.stock ?? 99,99)) return false
+      const existing=this.items.find(p=>p.id===product.id && p.color===color)
+      if(existing)existing.quantity+=quantity
+      else this.items.push({...product,thumbnail:product.colorImages?.[color as 'White'|'Black'|'Gray'] || product.thumbnail,color,quantity})
+      this.reprice();this.saveCart();return true
     },
-
-    decreaseQuantity(id: number) {
-      const item = this.items.find(
-        item => item.id === id
-      )
-
-      if (!item) return
-
-      if (item.quantity > 1) {
-        item.quantity--
-      } else {
-        this.removeFromCart(id)
-        return
-      }
-
-      this.saveCart()
+    increaseQuantity(id:number,color='') { return this.addToCart({id,color}) },
+    decreaseQuantity(id:number,color='') {
+      const item=this.items.find(p=>p.id===id && p.color===color)
+      if(!item)return
+      if(item.quantity>1)item.quantity--
+      else {this.removeFromCart(id,color);return}
+      this.reprice();this.saveCart()
     },
-
-    removeFromCart(id: number) {
-      this.items = this.items.filter(
-        item => item.id !== id
-      )
-
-      this.saveCart()
+    removeFromCart(id:number,color='') {
+      this.items=this.items.filter(p=>p.id!==id || p.color!==color)
+      this.reprice();this.saveCart()
     },
-
-    saveCart() {
-      localStorage.setItem(
-        'cart',
-        JSON.stringify(this.items)
-      )
-    },
-
+    saveCart() { localStorage.setItem('cart',JSON.stringify(this.items)) },
     loadCart() {
-      const savedCart = localStorage.getItem('cart')
-
-      if (savedCart) {
-        this.items = JSON.parse(savedCart)
-      }
+      let saved:unknown
+      try{saved=JSON.parse(localStorage.getItem('cart') || '[]')}catch{saved=[]}
+      this.items=[]
+      if(Array.isArray(saved))for(const item of saved){if(item && typeof item==='object')this.addToCart({id:item.id,color:item.color},item.quantity)}
     },
-            clearCart() {
-          this.items = []
-          this.saveCart()
-        }
+    clearCart() { this.items=[];this.saveCart() },
   },
 })

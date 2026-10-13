@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
 import router from './router/index'
+import { startAnalytics } from './lib/analytics'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import AOS from 'aos'
@@ -14,6 +15,7 @@ AOS.init({
 })
 
 const pinia = createPinia()
+startAnalytics(router)
 
 createApp(App)
   .use(router)

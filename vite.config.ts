@@ -1,10 +1,8 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
-
-export default defineConfig({
-  plugins: [
-    vue(),
-    tailwindcss(),
-  ],
-})
+import { customerAccount } from './server/customer-account'
+import { omsCheckout } from './server/oms-checkout'
+export default defineConfig(({mode}) => ({
+  plugins: [vue(), tailwindcss(), customerAccount(loadEnv(mode, process.cwd(), 'OMS_')), omsCheckout(loadEnv(mode, process.cwd(), 'OMS_'))],
+}))

@@ -1,0 +1,162 @@
+[
+  {
+    "sku": "P3D-ESP32-30P-C",
+    "title": "ESP32 Development Board — 30 Pin USB-C",
+    "sourcePage": "https://techiesms.com/product/esp32-development-board-30-pin-type-c/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2026/07/espC-1.webp",
+    "localImage": "/products/esp32-30p-c.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-STM32-BLUE",
+    "title": "STM32 Blue Pill Development Board",
+    "sourcePage": "https://techiesms.com/product/stm32-arm-32-bit-mini-development-board/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2025/05/STM32-3.png",
+    "localImage": "/products/stm32-blue.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-STM32-F411-BLK",
+    "title": "STM32 Black Pill — STM32F411CEU6",
+    "sourcePage": "https://shillehtek.com/products/shillehtek-pre-soldered-authentic-stm32f411ceu6",
+    "sourceImage": "https://shillehtek.com/cdn/shop/files/1_32bce60a-b106-49ea-8962-91f86bca5fb0.png?v=1770872899&width=800",
+    "localImage": "/products/stm32-f411-blk.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-DS18B20-PROBE",
+    "title": "DS18B20 Temperature Probe",
+    "sourcePage": "https://techiesms.com/product/ds18b20-water-proof-temperature-sensor/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2022/11/ds18b20-waterproof-temperature-sensor-probe-1-400x400-1.jpg",
+    "localImage": "/products/ds18b20-probe.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-NANO-C",
+    "title": "Arduino Nano Compatible Board — USB-C",
+    "sourcePage": "https://shillehtek.com/products/arduino-nano-v3-0-atmega328p-16mhz-ch340c-type-c",
+    "sourceImage": "https://shillehtek.com/cdn/shop/files/7_263d975e-804d-46cf-ad05-103c73dc9b1c.jpg?v=1773965872&width=800",
+    "localImage": "/products/nano-c.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-L298N",
+    "title": "L298N Motor Driver Module",
+    "sourcePage": "https://techiesms.com/product/l298n-2a-based-motor-driver-module/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2023/02/IMG_0527.webp",
+    "localImage": "/products/l298n.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-OLED-13-WHT",
+    "title": "1.3″ White OLED Display — SH1106",
+    "sourcePage": "https://techiesms.com/product/1-3in-oled-display/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2024/01/1.3OLED1.png",
+    "localImage": "/products/oled-13-wht.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-ESP32-C3-MINI",
+    "title": "ESP32-C3 SuperMini Development Board",
+    "sourcePage": "https://techiesms.com/product/esp32-c3-super-mini-board/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2026/08/super-mini-1.webp",
+    "localImage": "/products/esp32-c3-mini.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-ESUN-PLA-WHT",
+    "title": "eSUN PLA+ 1 kg — White",
+    "sourcePage": "https://esun3dstore.com/products/pla-pro",
+    "sourceImage": "https://ueeshop.ly200-cdn.com/u_file/UPBB/UPBB609/2609/30/products/ced41cc08b.jpg",
+    "localImage": "/products/esun-pla-wht.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-ESUN-PLA-BLK",
+    "title": "eSUN PLA+ 1 kg — Black",
+    "sourcePage": "https://esun3dstore.com/products/pla-pro",
+    "sourceImage": "https://ueeshop.ly200-cdn.com/u_file/UPBB/UPBB609/2609/30/products/5a9f449498.jpg",
+    "localImage": "/products/esun-pla-blk.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-ESUN-PLA-GRY",
+    "title": "eSUN PLA+ 1 kg — Gray",
+    "sourcePage": "https://esun3dstore.com/products/pla-pro",
+    "sourceImage": "https://ueeshop.ly200-cdn.com/u_file/UPBB/UPBB609/2609/30/products/164fd16622.jpg",
+    "localImage": "/products/esun-pla-gry.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-HC-SR04",
+    "title": "HC-SR04 Ultrasonic Sensor",
+    "sourcePage": "https://techiesms.com/product/hc-sr04-ultrasonic-sensor-module/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2024/01/AI0010.1.jpg",
+    "localImage": "/products/hc-sr04.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-OLED-096-BLU",
+    "title": "0.96″ Blue OLED Display — I2C",
+    "sourcePage": "https://techiesms.com/product/0-96-inch-i2c-iic-4pin-128x64-oled-disp/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2022/11/oled.png",
+    "localImage": "/products/oled-096-blu.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-CHASSIS-4WD",
+    "title": "4WD Acrylic Car Chassis Kit",
+    "sourcePage": "https://techiesms.com/product/4-wheel-smart-car-robot-chassis-kit/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2024/08/4wheel1.png",
+    "localImage": "/products/chassis-4wd.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-TTP223",
+    "title": "TTP223 Touch Sensor",
+    "sourcePage": "https://techiesms.com/product/ttp223b-capacitive-touch-sensor-module/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2026/05/touch-1.webp",
+    "localImage": "/products/ttp223.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-IR-MODULE",
+    "title": "IR Sensor Module",
+    "sourcePage": "https://techiesms.com/product/infrared-proximity-sensor-module/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2023/02/IR-.png",
+    "localImage": "/products/ir-module.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-PIR-MODULE",
+    "title": "PIR Motion Sensor Module",
+    "sourcePage": "https://techiesms.com/product/pir-sensor-motion-detector-module-hc-sr501/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2024/01/pir1.png",
+    "localImage": "/products/pir-module.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-ESP32-S3-MINI",
+    "title": "ESP32-S3 SuperMini Development Board",
+    "sourcePage": "https://www.nologo.tech/product/esp32/esp32s3/esp32s3supermini/esp32S3SuperMini.html",
+    "sourceImage": "https://www.nologo.tech/assets/img/esp32/esp32s3supermini/esp32s3.jpg",
+    "localImage": "/products/esp32-s3-mini.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-DHT11",
+    "title": "DHT11 Temperature & Humidity Sensor",
+    "sourcePage": "https://techiesms.com/product/dht11-temperature-and-humidity/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2022/11/DHT1-1.png",
+    "localImage": "/products/dht11.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  },
+  {
+    "sku": "P3D-DHT22",
+    "title": "DHT22 Temperature & Humidity Sensor",
+    "sourcePage": "https://techiesms.com/product/dht22-temperature-and-humidity-sensor/",
+    "sourceImage": "https://techiesms.com/wp-content/uploads/2024/08/DHT22-1.png",
+    "localImage": "/products/dht22.webp",
+    "photoStatus": "Online reference photo; exact supplied item has not been photographed."
+  }
+]

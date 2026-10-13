@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import productsData from '../data/products.json'
+import { stockLabel } from '../data/catalog'
 import { useRouter } from 'vue-router'
 import { ArrowLeftOnRectangleIcon, ArrowTrendingUpIcon, BanknotesIcon, CubeIcon, ExclamationTriangleIcon, MagnifyingGlassIcon, PrinterIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 
@@ -18,9 +20,8 @@ const orders = [
   { id: 'P3D-1045', customer: 'Tharushi Jay', item: 'MN82T RC Truck', total: 18900, payment: 'Cash on delivery', status: 'Confirmed' as OrderStatus, date: '09 Sep' },
   { id: 'P3D-1044', customer: 'Amal Senanayake', item: 'E88 Drone', total: 6150, payment: 'Cash on delivery', status: 'Delivered' as OrderStatus, date: '08 Sep' },
 ]
-const products = [
-  { name: 'E88 Drone', stock: 4 }, { name: 'E99 Max Drone', stock: 7 }, { name: 'K13 Max Drone', stock: 3 }, { name: 'D99S Defender', stock: 2 }, { name: 'MN82T RC Truck', stock: 5 },
-]
+const products = productsData.map(product => ({ name: product.title, sku: product.sku, stock: product.stock }))
+const lowStockCount = products.filter(product => product.stock != null && product.stock <= 3).length
 const quoteRequests = [
   { name: 'Gear Housing V4.STL', customer: 'Dilan', material: 'PETG · 40%', weight: '86 g', time: '12 min ago' },
   { name: 'Robot Arm Joint.STL', customer: 'Isuru', material: 'PLA · 20%', weight: '42 g', time: '1 hr ago' },
@@ -49,7 +50,7 @@ const statusClass = (value: OrderStatus) => ({
         <div class="stat-card"><div class="stat-icon"><BanknotesIcon /></div><div><p class="stat-label">Today’s revenue</p><p class="stat-value">Rs. 53,700</p><p class="stat-change"><ArrowTrendingUpIcon /> 12.5% this week</p></div></div>
         <div class="stat-card"><div class="stat-icon"><ShoppingBagIcon /></div><div><p class="stat-label">New orders</p><p class="stat-value">8</p><p class="stat-note">3 need attention</p></div></div>
         <div class="stat-card"><div class="stat-icon"><PrinterIcon /></div><div><p class="stat-label">Print requests</p><p class="stat-value">5</p><p class="stat-note">2 awaiting quote</p></div></div>
-        <div class="stat-card"><div class="stat-icon"><CubeIcon /></div><div><p class="stat-label">Products</p><p class="stat-value">7</p><p class="stat-note">2 low-stock items</p></div></div>
+        <div class="stat-card"><div class="stat-icon"><CubeIcon /></div><div><p class="stat-label">Products</p><p class="stat-value">{{ products.length }}</p><p class="stat-note">{{ lowStockCount }} low-stock items</p></div></div>
       </section>
 
       <div class="mt-7 grid items-start gap-7 xl:grid-cols-[1fr_340px]">
@@ -71,7 +72,7 @@ const statusClass = (value: OrderStatus) => ({
         </section>
 
         <aside class="space-y-7">
-          <section class="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6"><div class="flex items-center justify-between"><h2 class="text-lg font-black">Stock monitor</h2><ExclamationTriangleIcon class="h-5 w-5 text-amber-400"/></div><div class="mt-5 space-y-4"><div v-for="product in products" :key="product.name"><div class="flex justify-between text-xs"><span class="font-semibold text-slate-300">{{ product.name }}</span><span :class="product.stock <= 3 ? 'text-amber-300' : 'text-slate-500'">{{ product.stock }} left</span></div><div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800"><div :class="['h-full rounded-full', product.stock <= 3 ? 'bg-amber-400' : 'bg-cyan-400']" :style="{ width: `${Math.min(product.stock * 10, 100)}%` }"></div></div></div></div></section>
+          <section class="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6"><div class="flex items-center justify-between"><h2 class="text-lg font-black">Stock monitor</h2><ExclamationTriangleIcon class="h-5 w-5 text-amber-400"/></div><div class="mt-5 max-h-80 space-y-4 overflow-y-auto pr-2"><div v-for="product in products" :key="product.sku"><div class="flex justify-between text-xs"><span class="font-semibold text-slate-300">{{ product.name }}<span class="mt-1 block text-[10px] text-slate-500">{{ product.sku }}</span></span><span :class="product.stock != null && product.stock <= 3 ? 'text-amber-300' : 'text-slate-500'">{{ stockLabel(product.stock) }}</span></div><div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800"><div :class="['h-full rounded-full', product.stock != null && product.stock <= 3 ? 'bg-amber-400' : 'bg-cyan-400']" :style="{ width: `${product.stock == null ? 100 : Math.min(product.stock * 10, 100)}%` }"></div></div></div></div></section>
           <section class="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6"><h2 class="text-lg font-black">Custom print queue</h2><div class="mt-5 space-y-3"><div v-for="quote in quoteRequests" :key="quote.name" class="rounded-2xl bg-slate-900 p-4"><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="truncate text-sm font-bold">{{ quote.name }}</p><p class="mt-1 text-xs text-slate-500">{{ quote.customer }} · {{ quote.material }}</p></div><span class="shrink-0 text-[10px] text-slate-600">{{ quote.time }}</span></div><p class="mt-3 text-xs font-bold text-cyan-400">Est. {{ quote.weight }}</p></div></div></section>
         </aside>
       </div>
