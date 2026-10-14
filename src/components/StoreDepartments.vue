@@ -55,6 +55,10 @@ onUnmounted(()=>clearInterval(timer))
 .department-drawer::backdrop{background:#02061788;backdrop-filter:blur(3px)}
 @media(min-width:1024px){.department-layout{grid-template-columns:220px minmax(0,1fr)}.department-layout>div:last-of-type{grid-column:2}}
 @media(min-width:1280px){.department-layout{grid-template-columns:220px minmax(0,1fr) 200px}.department-layout>div:last-of-type{grid-column:auto}}
+@media(max-width:639px){
+.promo-banner{padding:16px}.promo-banner>div:first-child{min-height:118px}.promo-banner h2{font-size:18px}.promo-banner .promo-image{width:84px;height:110px}.promo-banner>div:first-child p:last-of-type{display:none}
+.department-layout>div:last-of-type>a{padding:12px}.department-layout>div:last-of-type>a>svg{width:18px;height:18px}.department-layout>div:last-of-type>a>p:first-of-type{font-size:12px;margin-top:6px}.department-layout>div:last-of-type>a>p:last-of-type{font-size:10px;line-height:15px}
+}
 @media(max-width:359px){.promo-image{width:80px;height:110px}.promo-banner{padding:16px}.promo-banner h2{font-size:18px}}
 :global(.dark-theme) .bg-orange-50{background:#431407}
 :global(.dark-theme) .border-orange-200{border-color:#7c2d12}
