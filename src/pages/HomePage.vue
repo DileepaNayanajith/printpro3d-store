@@ -24,7 +24,7 @@ const benefits = [
 
 <template>
   <div class="bg-slate-50 text-slate-900">
-    <ProductsPage />
+    <ProductsPage show-highlights />
     <section id="why-us" class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
       <div class="max-w-2xl" data-aos="fade-up">
         <p class="section-kicker">The PRINTPRO3D difference</p>
