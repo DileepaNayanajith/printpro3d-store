@@ -67,7 +67,7 @@ const toggleWishlist = () => {
         <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 sm:p-9">
           <ProductImage :src="selectedImage" :alt="product.title" class="aspect-square h-full w-full rounded-2xl object-contain" />
           <div v-if="product.images" class="mt-4 grid grid-cols-5 gap-2">
-            <button v-for="(image,index) in product.images" :key="image" @click="selectedImage=image" :aria-label="`View rack photo ${index+1}`" :aria-pressed="selectedImage===image" :class="['overflow-hidden rounded-lg border-2',selectedImage===image?'border-cyan-500':'border-slate-200']"><img :src="image" :alt="`Rack display photo ${index+1}`" loading="lazy" class="aspect-square w-full object-cover" /></button>
+            <button v-for="(image,index) in product.images" :key="image" @click="selectedImage=image" :aria-label="`View ${product.title} photo ${index+1}`" :aria-pressed="selectedImage===image" :class="['overflow-hidden rounded-lg border-2',selectedImage===image?'border-cyan-500':'border-slate-200']"><img :src="image" :alt="`${product.title} photo ${index+1}`" loading="lazy" class="aspect-square w-full object-cover" /></button>
           </div>
         </div>
 

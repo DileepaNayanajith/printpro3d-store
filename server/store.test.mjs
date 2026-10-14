@@ -117,3 +117,15 @@ test('electronics, filament and mixed rack order keep authoritative totals', asy
  assert.equal((await post({...order,items,expected_total_cents:1})).status,409)
  assert.equal(received.length,1)
 })
+
+test('new Mochi, skeleton and model rack products keep confirmed prices through checkout', async t => {
+ const {post,received}=await fixture(t)
+ const items=[1021,1022,1023,1024].map(id=>({id,quantity:1}))
+ assert.equal((await post({...order,items,expected_total_cents:945000})).status,201)
+ assert.equal(received[0].body.total_cents,945000)
+ assert.match(received[0].body.product,/Mochi Companion Robot/)
+ assert.match(received[0].body.product,/Skeleton Figure Pack/)
+ assert.match(received[0].body.product,/1:32 Model Car Display Rack/)
+ assert.equal((await post({...order,items,expected_total_cents:1})).status,409)
+ assert.equal(received.length,1)
+})

@@ -1,5 +1,113 @@
 [
   {
+    "id": 1021,
+    "title": "Mochi Companion Robot",
+    "sku": "P3D-MOCHI-ROBOT",
+    "price": 3500,
+    "category": "robotics",
+    "thumbnail": "/products/mochi-box.webp",
+    "description": "Meet Mochi, a compact companion robot with a 3D-printed casing and OLED face. Built with an ESP32-C3 SuperMini and a 0.96-inch I2C OLED display, Mochi adds a little character to your desk. The package includes the provided project code.",
+    "features": [
+      "ESP32-C3 SuperMini controller",
+      "0.96-inch I2C OLED display",
+      "3D-printed casing",
+      "Project code provided with the package"
+    ],
+    "images": [
+      "/products/mochi-box.webp",
+      "/products/mochi-black.webp",
+      "/products/mochi-dashboard.webp",
+      "/products/mochi-packed.webp",
+      "/products/mochi-lineup.webp",
+      "/products/mochi-hand.webp"
+    ],
+    "photoNote": "Photos show different casing finishes. Contact PRINTPRO3D for current casing colour availability. Price is for one robot.",
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1022,
+    "title": "Mochi DIY Pack",
+    "sku": "P3D-MOCHI-DIY",
+    "price": 2800,
+    "category": "robotics",
+    "thumbnail": "/products/mochi-diy.webp",
+    "description": "Build your own Mochi companion robot with this DIY pack. Includes an ESP32-C3 SuperMini, a 0.96-inch I2C OLED display, casing and provided project code. Assembly and programming are required.",
+    "features": [
+      "ESP32-C3 SuperMini",
+      "0.96-inch I2C OLED display",
+      "Casing included",
+      "Project code provided",
+      "DIY assembly required"
+    ],
+    "images": [
+      "/products/mochi-diy.webp",
+      "/products/mochi-lineup.webp"
+    ],
+    "photoNote": "The component photo also shows a touch module; it is not listed as a confirmed pack inclusion. The casing photo shows several examples; the pack includes one casing.",
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1023,
+    "title": "Skeleton Figure Pack — 4 Figures, 10 cm",
+    "sku": "P3D-SKELETON-4-10CM",
+    "price": 1250,
+    "category": "3d-printed-models",
+    "thumbnail": "/products/skeleton-pack.webp",
+    "description": "A pack of four 10 cm skeleton figures with weapons, ready to bring character to a shelf, desk or miniature display. Arrange the figures into your own themed scene.",
+    "features": [
+      "4 skeleton figures per pack",
+      "10 cm figure height",
+      "Weapons included"
+    ],
+    "images": [
+      "/products/skeleton-pack.webp"
+    ],
+    "photoNote": "Owner-provided photo of the skeleton figures and accessories.",
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1024,
+    "title": "1:32 Model Car Display Rack — 4 Slots",
+    "sku": "P3D-RACK-132-4",
+    "price": 1500,
+    "category": "display-racks",
+    "thumbnail": "/products/rack-132-black.webp",
+    "description": "Give your 1:32 model car collection a dedicated display with this four-slot rack. The open-front design keeps each car visible while bringing your collection together in one tidy display.",
+    "features": [
+      "For 1:32 model cars",
+      "4 display slots",
+      "Open-front display design",
+      "Rack only — model cars not included"
+    ],
+    "images": [
+      "/products/rack-132-black.webp",
+      "/products/rack-132-green.webp",
+      "/products/rack-132-display.webp"
+    ],
+    "photoNote": "Photos show black and green examples. Contact PRINTPRO3D for current colour availability. Model cars shown are display examples and are not included.",
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
     "id": 1001,
     "title": "ESP32 Development Board — 30 Pin USB-C",
     "sku": "P3D-ESP32-30P-C",

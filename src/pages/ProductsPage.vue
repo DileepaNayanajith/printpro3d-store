@@ -26,7 +26,7 @@ watch(() => route.query, query => {
   selectedCategory.value = typeof query.category === 'string' ? query.category : 'all'
 }, { immediate: true })
 const sortBy = ref('featured')
-const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks' }
+const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
 const categoryLabel = (category: string) => categoryLabels[category] || category.replace(/-/g, ' ')
 
 const wishlist = useWishlistStore()
