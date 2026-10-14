@@ -4,6 +4,7 @@ const { buyNow } = useBuyNow()
 import { useRouter } from 'vue-router'
 const purchaseRouter = useRouter()
 import { computed, ref, watch } from 'vue'
+import StoreDepartments from '../components/StoreDepartments.vue'
 import ProductHighlights from '../components/ProductHighlights.vue'
 defineProps<{ showHighlights?: boolean }>()
 import { HeartIcon, MagnifyingGlassIcon, ScaleIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
@@ -67,13 +68,14 @@ const toggleCompare = (product: Product) => {
 <template>
   <div class="min-h-screen bg-slate-50 px-5 py-6 text-slate-900 sm:px-8">
     <div class="mx-auto max-w-7xl">
-      <div class="max-w-3xl">
+      <div v-if="!showHighlights" class="max-w-3xl">
         <p class="section-kicker">Discover • Build • Play</p>
         <h1 class="section-title shop-title">Your next favourite find.</h1>
         <p class="mt-2 hidden text-sm text-slate-600 sm:block">Shop electronics, sensors, 3D filament, drones and RC vehicles. Local support, islandwide delivery.</p>
       </div>
 
-      <div class="mt-3 flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800"><span>Islandwide delivery</span><span class="hidden sm:inline">Cash on delivery available</span><span class="hidden sm:inline">Free delivery with bank deposit</span><router-link to="/custom-print" class="underline underline-offset-4">Custom 3D printing →</router-link></div>
+      <StoreDepartments v-if="showHighlights" :selected="selectedCategory" @select="selectedCategory=$event" />
+      <div v-if="!showHighlights" class="mt-3 flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800"><span>Islandwide delivery</span><span class="hidden sm:inline">Cash on delivery available</span><span class="hidden sm:inline">Free delivery with bank deposit</span><router-link to="/custom-print" class="underline underline-offset-4">Custom 3D printing →</router-link></div>
       <ProductHighlights v-if="showHighlights" />
       <div class="catalog-controls mt-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-2 grid-cols-[1fr_auto]">
         <label class="relative block min-w-0">

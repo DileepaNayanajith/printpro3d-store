@@ -31,6 +31,7 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
 
 <template>
   <div :class="['min-h-screen', isAdminArea ? 'bg-slate-950 text-white' : ['storefront bg-slate-50 text-slate-900', { 'dark-theme': theme.theme === 'dark' }]]">
+    <div v-if="!isAdminArea" class="bg-blue-600 px-4 py-2 text-center text-[10px] font-semibold text-white sm:text-xs">Islandwide delivery · Cash on delivery · <a href="https://wa.me/94721272082" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">WhatsApp support: 072 127 2082</a></div>
     <nav v-if="!isAdminArea" class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div class="store-header mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
         <router-link to="/" class="store-brand flex min-w-0 items-center gap-2" aria-label="PRINTPRO3D home">
