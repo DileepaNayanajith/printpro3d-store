@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 const purchaseRouter = useRouter()
 import { computed, ref, watch } from 'vue'
 import StoreDepartments from '../components/StoreDepartments.vue'
-import ProductHighlights from '../components/ProductHighlights.vue'
 defineProps<{ showHighlights?: boolean }>()
 import { HeartIcon, MagnifyingGlassIcon, ScaleIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import productsData from '../data/products.json'
@@ -76,7 +75,6 @@ const toggleCompare = (product: Product) => {
 
       <StoreDepartments v-if="showHighlights" :selected="selectedCategory" @select="selectedCategory=$event" />
       <div v-if="!showHighlights" class="mt-3 flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800"><span>Islandwide delivery</span><span class="hidden sm:inline">Cash on delivery available</span><span class="hidden sm:inline">Free delivery with bank deposit</span><router-link to="/custom-print" class="underline underline-offset-4">Custom 3D printing →</router-link></div>
-      <ProductHighlights v-if="showHighlights" />
       <div class="catalog-controls mt-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-2 grid-cols-[1fr_auto]">
         <label class="relative block min-w-0">
           <MagnifyingGlassIcon class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
