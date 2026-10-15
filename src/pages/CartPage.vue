@@ -8,7 +8,7 @@ const formatPrice = (value: number) => `Rs. ${value.toLocaleString()}`
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 px-5 py-14 text-slate-900 sm:px-8 lg:py-16">
+  <div class="cart-page min-h-screen bg-slate-50 px-5 py-14 text-slate-900 sm:px-8 lg:py-16">
     <div class="mx-auto max-w-7xl">
       <router-link to="/products" class="inline-flex items-center gap-2 text-sm font-bold text-slate-600 transition hover:text-blue-600">
         <ArrowLeftIcon class="h-4 w-4" /> Continue shopping
@@ -28,7 +28,7 @@ const formatPrice = (value: number) => `Rs. ${value.toLocaleString()}`
 
       <div v-else class="mt-10 grid items-start gap-8 lg:grid-cols-[1fr_380px]">
         <section class="space-y-4"><p v-if="cart.items.some(item => item.id === 8)" class="rounded-xl bg-blue-50 p-4 text-sm text-blue-800">3 or more racks: Rs. 1,750 each, including mixed colours. Bank deposit delivery is free; COD delivery is Rs. 400.</p>
-          <article v-for="item in cart.items" :key="`${item.id}:${item.color}`" class="grid gap-5 rounded-3xl border border-slate-200 bg-white p-4 sm:grid-cols-[130px_1fr] sm:p-5">
+          <article v-for="item in cart.items" :key="`${item.id}:${item.color}`" class="cart-line grid gap-5 rounded-3xl border border-slate-200 bg-white p-4 sm:grid-cols-[130px_1fr] sm:p-5">
             <router-link :to="`/products/${item.id}`" class="aspect-square overflow-hidden rounded-2xl bg-white p-2">
               <img :src="item.thumbnail" :alt="item.title" class="h-full w-full rounded-xl object-contain" />
             </router-link>
@@ -37,7 +37,7 @@ const formatPrice = (value: number) => `Rs. ${value.toLocaleString()}`
                 <div><p class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ item.category?.replace('-', ' ') }}</p><router-link :to="`/products/${item.id}`" class="mt-1 block text-lg font-black text-slate-900 hover:text-blue-600">{{ item.title }}</router-link><p class="mt-1 break-all text-xs text-slate-500">SKU: {{ productSku(item) }}</p><p v-if="item.color" class="mt-1 text-sm text-blue-600">Colour: {{ item.color }}</p><p class="mt-2 text-sm text-slate-600">{{ formatPrice(item.price) }} each</p></div>
                 <button @click="cart.removeFromCart(item.id, item.color)" class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-500 transition hover:bg-rose-500/10 hover:text-rose-600" :aria-label="`Remove ${item.title}`"><TrashIcon class="h-5 w-5" /></button>
               </div>
-              <div class="flex items-center justify-between gap-4">
+              <div class="cart-line-controls flex items-center justify-between gap-4">
                 <div class="inline-flex items-center rounded-full border border-slate-200 bg-white p-1">
                   <button @click="cart.decreaseQuantity(item.id, item.color)" class="grid h-9 w-9 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 hover:text-slate-900" aria-label="Decrease quantity"><MinusIcon class="h-4 w-4" /></button>
                   <span class="w-10 text-center text-sm font-black">{{ item.quantity }}</span>

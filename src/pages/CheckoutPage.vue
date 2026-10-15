@@ -43,7 +43,7 @@ const placeOrder = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 px-5 py-12 text-slate-900 sm:px-8 lg:py-16">
+  <div class="checkout-page min-h-screen bg-slate-50 px-5 py-12 text-slate-900 sm:px-8 lg:py-16">
     <form class="mx-auto max-w-7xl" @submit.prevent="placeOrder">
       <router-link to="/cart" class="inline-flex items-center gap-2 text-sm font-bold text-slate-600 transition hover:text-blue-600"><ArrowLeftIcon class="h-4 w-4" /> Back to cart</router-link>
       <div class="mt-7"><p class="section-kicker">Secure checkout</p><h1 class="section-title">Complete your order</h1><p class="mt-4 text-slate-600">Enter your delivery details and review your items.</p></div>

@@ -50,14 +50,14 @@ const toggleWishlist = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 px-5 py-10 text-slate-900 sm:px-8 lg:py-16">
+  <div class="product-detail-page min-h-screen bg-slate-50 px-5 py-10 text-slate-900 sm:px-8 lg:py-16">
     <div v-if="product" class="mx-auto max-w-7xl">
       <router-link to="/products" class="inline-flex items-center gap-2 text-sm font-bold text-slate-600 transition hover:text-blue-600">
         <ArrowLeftIcon class="h-4 w-4" /> Back to products
       </router-link>
 
-      <section class="mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-        <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 sm:p-9">
+      <section class="product-detail-layout mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <div class="product-gallery overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 sm:p-9">
           <ProductImage eager :src="selectedImage" :alt="product.title" class="aspect-square h-full w-full rounded-2xl object-contain" />
           <div v-if="product.images" class="mt-4 grid grid-cols-5 gap-2">
             <button v-for="(image,index) in product.images" :key="image" @click="selectedImage=image" :aria-label="`View ${product.title} photo ${index+1}`" :aria-pressed="selectedImage===image" :class="['overflow-hidden rounded-lg border-2',selectedImage===image?'border-cyan-500':'border-slate-200']"><img :src="image" :alt="`${product.title} photo ${index+1}`" loading="lazy" class="aspect-square w-full object-cover" /></button>
@@ -87,7 +87,7 @@ const toggleWishlist = () => {
             <p class="text-sm leading-6 text-slate-600">10 slots per rack · Fits 1:64 cars · Combine more racks as your collection grows</p>
             <p class="text-sm text-slate-600">Rack only. Cars shown in the photos are not included.</p>
           </div>
-          <div class="mt-9 grid gap-3 sm:grid-cols-2">
+          <div class="product-detail-actions mt-9 grid gap-3 sm:grid-cols-2">
             <button :disabled="product.stock === 0" @click="buyNow" class="buy-now-button inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-4 font-bold text-white transition hover:bg-orange-600"><BoltIcon class="h-5 w-5" /> Buy it now</button>
             <button :disabled="product.stock === 0" @click="addToCart" class="primary-button flex-1"><ShoppingBagIcon class="h-5 w-5" /> Add to cart</button>
             <button @click="toggleWishlist" :class="['sm:col-span-2 inline-flex h-14 items-center justify-center gap-2 rounded-full border px-7 font-bold transition', wishlist.isInWishlist(product.id) ? 'border-rose-500 bg-rose-500 text-slate-900' : 'border-slate-200 text-slate-900 hover:border-rose-400 hover:text-rose-600']">

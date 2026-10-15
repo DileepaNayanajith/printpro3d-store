@@ -4,6 +4,7 @@ import { ChatBubbleLeftRightIcon, PaperAirplaneIcon, XMarkIcon } from '@heroicon
 
 type Message = { id: number; from: 'support' | 'customer'; text: string }
 const isOpen = ref(false)
+defineExpose({ open: () => { isOpen.value = true } })
 const draft = ref('')
 const messages = ref<Message[]>([
   { id: 1, from: 'support', text: 'Hi! Welcome to PRINTPRO3D 👋 How can we help you today?' },
@@ -39,9 +40,9 @@ const sendMessage = (text = draft.value) => {
 </script>
 
 <template>
-  <div class="fixed bottom-5 right-5 z-[70] sm:bottom-7 sm:right-7">
+  <div @keydown.esc="isOpen = false" class="store-live-chat fixed bottom-5 right-5 z-[70] sm:bottom-7 sm:right-7">
     <transition enter-active-class="transition duration-200" enter-from-class="translate-y-4 opacity-0 scale-95" leave-active-class="transition duration-150" leave-to-class="translate-y-4 opacity-0 scale-95">
-      <section v-if="isOpen" class="mb-4 flex h-[min(620px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-2xl shadow-black/50">
+      <section v-if="isOpen" role="dialog" aria-label="PRINTPRO3D Support" class="chat-panel mb-4 flex h-[min(620px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-2xl shadow-black/50">
         <header class="flex items-center justify-between bg-blue-100 px-5 py-4 text-slate-950">
           <div class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-blue-600"><ChatBubbleLeftRightIcon class="h-5 w-5" /></span><div><h2 class="font-black">PRINTPRO3D Support</h2><p class="flex items-center gap-1.5 text-xs font-semibold"><span class="h-2 w-2 rounded-full bg-emerald-600"></span> Online</p></div></div>
           <button @click="isOpen = false" class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-slate-50/10" aria-label="Close live chat"><XMarkIcon class="h-5 w-5" /></button>
@@ -63,7 +64,7 @@ const sendMessage = (text = draft.value) => {
       </section>
     </transition>
 
-    <button @click="isOpen = !isOpen" class="ml-auto grid h-15 w-15 place-items-center rounded-full bg-blue-100 text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-1 hover:bg-blue-200" :aria-label="isOpen ? 'Close live chat' : 'Open live chat'">
+    <button @click="isOpen = !isOpen" class="live-chat-launcher ml-auto grid h-15 w-15 place-items-center rounded-full bg-blue-100 text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-1 hover:bg-blue-200" :aria-label="isOpen ? 'Close live chat' : 'Open live chat'">
       <XMarkIcon v-if="isOpen" class="h-7 w-7" /><ChatBubbleLeftRightIcon v-else class="h-7 w-7" />
     </button>
   </div>
