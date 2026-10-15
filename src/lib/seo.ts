@@ -35,7 +35,7 @@ export function seoFor(input:string, catalog:SeoProduct[]) {
  let canonical=ORIGIN+path, image=ORIGIN+'/products/mochi-box.webp'
  let schema:Record<string,unknown>|null=null
  if(product){
-  title=`${product.title} | PRINTPRO3D Sri Lanka`;description=productDescription(product).slice(0,170);image=new URL(product.thumbnail,ORIGIN).href
+  title=`${product.title} | PRINTPRO3D Sri Lanka`;description=productDescription(product).length>170 ? productDescription(product).slice(0,167).replace(/\s+\S*$/,'')+'…' : productDescription(product);image=new URL(product.thumbnail,ORIGIN).href
   schema={'@context':'https://schema.org','@type':'Product',name:product.title,description:productDescription(product),sku:product.sku,image:[...new Set([product.thumbnail,...(product.images || [])])].map(p=>new URL(p,ORIGIN).href),brand:{'@type':'Brand',name:'PRINTPRO3D'},url:canonical,offers:{'@type':'Offer',url:canonical,priceCurrency:'LKR',price:product.price,availability:`https://schema.org/${product.stock===0?'OutOfStock':'InStock'}`,seller:{'@type':'Organization',name:'PRINTPRO3D'}}}
  }else if(path==='/products' && category && categories.includes(category)){
   title=`${categoryName(category)} Sri Lanka | PRINTPRO3D`;description=`Shop ${categoryName(category).toLowerCase()} at PRINTPRO3D Sri Lanka. Compare current LKR prices, view availability and order with islandwide delivery.`;canonical+=`?category=${encodeURIComponent(category)}`
