@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
 import router from './router/index'
+import { installSeo } from './lib/seo-client'
 import { startAnalytics } from './lib/analytics'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
@@ -15,6 +16,7 @@ AOS.init({
 })
 
 const pinia = createPinia()
+installSeo(router)
 startAnalytics(router)
 
 createApp(App)

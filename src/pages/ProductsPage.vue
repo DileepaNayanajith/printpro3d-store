@@ -8,6 +8,7 @@ import StoreDepartments from '../components/StoreDepartments.vue'
 defineProps<{ showHighlights?: boolean }>()
 import { HeartIcon, MagnifyingGlassIcon, ScaleIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import productsData from '../data/products.json'
+import { publicProducts } from '../lib/seo'
 import { stockLabel } from '../data/catalog'
 import ProductImage from '../components/ProductImage.vue'
 import { useWishlistStore } from '../stores/wishlistStore'
@@ -17,7 +18,7 @@ import { useRoute } from 'vue-router'
 import { useCompareStore } from '../stores/compareStore'
 
 type Product = typeof productsData[number]
-const products = ref<Product[]>(productsData)
+const products = ref<Product[]>(publicProducts(productsData))
 const search = ref('')
 const route = useRoute()
 const selectedCategory = ref(typeof route.query.category === 'string' ? route.query.category : 'all')
@@ -67,6 +68,7 @@ const toggleCompare = (product: Product) => {
 <template>
   <div class="min-h-screen bg-slate-50 px-5 py-6 text-slate-900 sm:px-8">
     <div class="mx-auto max-w-7xl">
+      <h1 v-if="showHighlights" class="sr-only">PRINTPRO3D — 3D Printing, Electronics and RC Products in Sri Lanka</h1>
       <div v-if="!showHighlights" class="max-w-3xl">
         <p class="section-kicker">Discover • Build • Play</p>
         <h1 class="section-title shop-title">Your next favourite find.</h1>
@@ -86,7 +88,7 @@ const toggleCompare = (product: Product) => {
       </div>
 
       <div class="category-navigation mt-4 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Product categories">
-        <button v-for="category in categories" :key="category" @click="selectedCategory = category" :aria-pressed="selectedCategory === category" :class="['shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-bold capitalize transition', selectedCategory === category ? 'bg-blue-100 text-slate-950' : 'border border-slate-200 bg-slate-100 text-slate-600 hover:border-slate-300 hover:text-slate-900']">{{ categoryLabel(category) }}</button>
+        <router-link v-for="category in categories" :to="category === 'all' ? '/products' : { path: '/products', query: { category } }" :key="category" @click="selectedCategory = category" :aria-pressed="selectedCategory === category" :class="['shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-bold capitalize transition', selectedCategory === category ? 'bg-blue-100 text-slate-950' : 'border border-slate-200 bg-slate-100 text-slate-600 hover:border-slate-300 hover:text-slate-900']">{{ categoryLabel(category) }}</router-link>
       </div>
 
       <p class="mt-2 text-xs text-slate-500" role="status" aria-live="polite">{{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'product' : 'products' }}</p>

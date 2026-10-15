@@ -5,7 +5,9 @@ import { BoltIcon, ArrowLeftIcon, CheckCircleIcon, HeartIcon, ShoppingBagIcon, T
 import { useToast } from 'vue-toastification'
 import { useCartStore } from '../stores/cartStore'
 import { useWishlistStore } from '../stores/wishlistStore'
-import productsData from '../data/products.json'
+import catalog from '../data/products.json'
+import { publicProducts, productDescription } from '../lib/seo'
+const productsData=publicProducts(catalog)
 import { stockLabel } from '../data/catalog'
 import ProductImage from '../components/ProductImage.vue'
 import { useRecentStore } from '../stores/recentStore'
@@ -26,15 +28,6 @@ const recentlyViewed = computed(() => recent.items.filter(item => item.id !== pr
 recent.load()
 watch(product, value => { if (value) recent.add(value); selectedColor.value=''; selectedImage.value=value?.thumbnail || ''; quantity.value=1 }, { immediate: true })
 
-const descriptions: Record<number, string> = {
-  1: 'A feature-packed camera drone built for smooth flights, stable hovering and exciting aerial views.',
-  2: 'A compact camera drone paired with a display remote for a more convenient flying experience.',
-  3: 'A lightweight foldable drone that makes aerial fun accessible for beginners and casual pilots.',
-  4: 'A portable dual-camera drone with a complete kit, ideal for learning, travel and everyday flying.',
-  5: 'A versatile foldable camera drone offering stable control and a travel-friendly design.',
-  6: 'A detailed 1:12 scale 4WD Defender-style crawler made for realistic off-road RC adventures.',
-  7: 'A rugged Toyota LC79-style RC pickup with off-road character and realistic scale detailing.',
-}
 
 const addToCart = () => {
   if (!product.value || product.value.stock === 0) return
@@ -65,7 +58,7 @@ const toggleWishlist = () => {
 
       <section class="mt-8 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
         <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 sm:p-9">
-          <ProductImage :src="selectedImage" :alt="product.title" class="aspect-square h-full w-full rounded-2xl object-contain" />
+          <ProductImage eager :src="selectedImage" :alt="product.title" class="aspect-square h-full w-full rounded-2xl object-contain" />
           <div v-if="product.images" class="mt-4 grid grid-cols-5 gap-2">
             <button v-for="(image,index) in product.images" :key="image" @click="selectedImage=image" :aria-label="`View ${product.title} photo ${index+1}`" :aria-pressed="selectedImage===image" :class="['overflow-hidden rounded-lg border-2',selectedImage===image?'border-cyan-500':'border-slate-200']"><img :src="image" :alt="`${product.title} photo ${index+1}`" loading="lazy" class="aspect-square w-full object-cover" /></button>
           </div>
@@ -79,7 +72,7 @@ const toggleWishlist = () => {
           <h1 class="mt-6 text-2xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl">{{ product.title }}</h1>
           <p class="mt-3 break-all text-xs font-semibold text-slate-500">SKU: {{ product.sku }}</p>
           <p class="mt-5 text-3xl font-black text-blue-600">Rs. {{ product.price.toLocaleString() }}</p>
-          <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">{{ product.description || descriptions[product.id] }}</p>
+          <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">{{ productDescription(product) }}</p>
 
           <ul v-if="product.features?.length" class="mt-5 space-y-2 text-sm text-slate-600"><li v-for="feature in product.features" :key="feature" class="flex items-center gap-2"><CheckCircleIcon class="h-4 w-4 shrink-0 text-blue-600" />{{ feature }}</li></ul>
           <p v-if="product.photoNote" class="mt-4 text-xs leading-5 text-slate-500">{{ product.photoNote }}</p>

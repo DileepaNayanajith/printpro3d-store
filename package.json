@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vue-tsc -b && vite build && vite build --ssr src/entry-prerender.ts --outDir .prerender && node scripts/prerender.mjs",
     "preview": "vite preview",
     "start": "node server/index.mjs",
     "test": "node --test server/*.test.mjs"
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "@vue/server-renderer": "^3.5.34",
     "aos": "^2.3.4",
     "pinia": "^3.0.4",
     "three": "^0.186.0",

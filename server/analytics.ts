@@ -1,3 +1,4 @@
+import { allowedOrigin } from './origins.ts'
 import type { Connect } from 'vite'
 
 // Only this server knows the OMS bridge token. Analytics failures never block checkout.
@@ -7,7 +8,7 @@ export function analyticsMiddleware(env: Record<string,string>): Connect.NextHan
     if(req.url?.split('?')[0]!=='/api/visit')return next()
     const reply=(status:number)=>{res.statusCode=status;res.setHeader('Cache-Control','no-store');res.end()}
     if(req.method!=='POST')return reply(405)
-    if(req.headers.origin!==(env.PUBLIC_URL||`http://${req.headers.host}`))return reply(403)
+    if(!allowedOrigin(req,env))return reply(403)
     if(!env.OMS_URL||!env.OMS_WEBSITE_TOKEN)return reply(204)
     try {
       let raw=''

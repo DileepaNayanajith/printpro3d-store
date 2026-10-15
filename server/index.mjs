@@ -1,11 +1,13 @@
 import { createServer } from 'node:http'
 import { createReadStream } from 'node:fs'
-import { stat } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import { resolve, extname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkoutMiddleware } from './oms-checkout.ts'
 import { analyticsMiddleware } from './analytics.ts'
 import { accountMiddleware } from './customer-account.ts'
+
+import { loadCatalog, seoFor, sitemap, robotsText, ORIGIN, injectHead } from './seo.mjs'
 
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp','.mp4':'video/mp4','.ico':'image/x-icon','.woff2':'font/woff2'}
 export function createStore(env, directory=resolve('dist')) {
@@ -25,14 +27,36 @@ export function createStore(env, directory=resolve('dist')) {
         return await analytics(req,res,()=>checkout(req,res,next))
       }
       if(!['GET','HEAD'].includes(req.method))return reply(405,{error:'Method not allowed.'})
+      if(pathname==='/robots.txt' || pathname==='/sitemap.xml') {
+        const body=pathname==='/robots.txt'?robotsText:sitemap(await loadCatalog())
+        res.setHeader('Content-Type',pathname==='/robots.txt'?'text/plain; charset=utf-8':'application/xml; charset=utf-8')
+        res.setHeader('Cache-Control','no-cache');res.setHeader('Content-Length',Buffer.byteLength(body))
+        return res.end(req.method==='HEAD'?undefined:body)
+      }
       const decoded=decodeURIComponent(pathname)
       if(decoded.includes('\0') || decoded.includes('\\') || decoded.split('/').some(p=>p.startsWith('.')))return reply(404,{error:'Not found.'})
+      if(decoded.startsWith('/prerender/'))return reply(404,{error:'Not found.'})
+      if(decoded==='/index.html'){res.statusCode=301;res.setHeader('Location','/');return res.end()}
       let path=resolve(root,'.'+decoded)
       if(!path.startsWith(root+sep)&&path!==root)return reply(404,{error:'Not found.'})
       let info=await stat(path).catch(()=>null)
       if(!info?.isFile()) {
         if(extname(path))return reply(404,{error:'Not found.'})
-        path=resolve(root,'index.html');info=await stat(path)
+        const url=new URL(req.url,'http://localhost'),catalog=await loadCatalog(),seo=seoFor(req.url,catalog)
+        const host=String(req.headers.host || '').split(':')[0].toLowerCase()
+        if(host==='printpro3d-store-production.up.railway.app' && !seo.privatePage) {
+          res.statusCode=301;res.setHeader('Location',ORIGIN+url.pathname+url.search);return res.end()
+        }
+        let key=url.pathname.replace(/\/$/,'') || '/'
+        if(key==='/products' && url.searchParams.has('category') && url.searchParams.get('category')!=='all')key+='?category='+encodeURIComponent(url.searchParams.get('category'))
+        const manifest=JSON.parse(await readFile(resolve(root,'prerender/routes.json'),'utf8').catch(()=> '{}'))
+        const rendered=manifest[seo.status===404?'/__404':key]
+        let html=await readFile(resolve(root,rendered?'prerender/'+rendered:'index.html'),'utf8')
+        // Recalculate the head for queries and the current catalog; keep the prerendered visible Vue markup.
+        html=injectHead(html.replace(/<meta[^>]+data-seo[^>]*>/g,'').replace(/<link rel="canonical"[^>]*>/g,'').replace(/<script id="product-schema".*?<\/script>/s,''),seo)
+        res.statusCode=seo.status;res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('Cache-Control','no-cache')
+        if(seo.robots.startsWith('noindex'))res.setHeader('X-Robots-Tag','noindex, follow')
+        res.setHeader('Content-Length',Buffer.byteLength(html));return res.end(req.method==='HEAD'?undefined:html)
       }
       res.setHeader('Content-Type',types[extname(path)]||'application/octet-stream')
       res.setHeader('Cache-Control',path.includes(`${sep}assets${sep}`)?'public, max-age=31536000, immutable':'no-cache')

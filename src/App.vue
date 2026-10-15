@@ -24,7 +24,7 @@ const isAdminArea = computed(() => route.path.startsWith('/admin'))
 onMounted(() => { cart.loadCart(); wishlist.loadWishlist(); compare.load() })
 watch(() => route.fullPath, () => {
   mobileMenuOpen.value = false
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.startsWith(to)
 </script>

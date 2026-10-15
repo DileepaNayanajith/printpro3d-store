@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createMemoryHistory } from 'vue-router'
 import HomePage from '../pages/HomePage.vue'
 import ProductsPage from '../pages/ProductsPage.vue'
 import ProductDetailsPage from '../pages/ProductDetailsPage.vue'
@@ -15,8 +15,9 @@ import NotFoundPage from '../pages/NotFoundPage.vue'
 import AdminPage from '../pages/AdminPage.vue'
 import AdminLoginPage from '../pages/AdminLoginPage.vue'
 
+export function createStoreRouter(server=false) {
 const router = createRouter({
-  history: createWebHistory(),
+  history: server ? createMemoryHistory() : createWebHistory(),
   routes: [
     { path: '/account', component: () => import('../pages/AccountPage.vue') },
     {
@@ -88,9 +89,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  if (server) return
   const isAdmin = localStorage.getItem('printpro3d_admin_session') === 'authenticated'
   if (to.meta.requiresAdmin && !isAdmin) return { path: '/admin/login', query: { redirect: to.fullPath } }
   if (to.path === '/admin/login' && isAdmin) return '/admin'
 })
 
-export default router
+return router
+}
+export default createStoreRouter(typeof window === 'undefined')

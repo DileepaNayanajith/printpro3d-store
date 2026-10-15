@@ -1,3 +1,4 @@
+import { allowedOrigin } from './origins.ts'
 import type { Plugin, Connect } from 'vite'
 import { createHash } from 'node:crypto'
 import type { IncomingMessage } from 'node:http'
@@ -14,7 +15,7 @@ export function accountMiddleware(env:Record<string,string>):Connect.NextHandleF
     const method=['config','orders'].includes(action)?'GET':'POST'
     if(!['config','orders','register','login','logout','google','returns'].includes(action))return reply(404,{error:'Not found.'})
     if(req.method!==method)return reply(405,{error:'Method not allowed.'})
-    if(method==='POST' && req.headers.origin!==(env.PUBLIC_URL || `http://${req.headers.host}`))return reply(403,{error:'Reload this page and try again.'})
+    if(method==='POST' && !allowedOrigin(req,env))return reply(403,{error:'Reload this page and try again.'})
     if(!env.OMS_URL||!env.OMS_WEBSITE_TOKEN)return reply(503,{error:'Accounts are temporarily unavailable.'})
     try {
       let body=''

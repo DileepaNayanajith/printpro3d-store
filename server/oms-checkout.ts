@@ -1,3 +1,4 @@
+import { allowedOrigin } from './origins.ts'
 import { unitPrice } from '../src/lib/pricing.ts'
 import { customerToken } from './customer-account.ts'
 import type { Plugin, Connect } from 'vite'
@@ -10,7 +11,7 @@ export function checkoutMiddleware(env: Record<string, string>): Connect.NextHan
     if (req.url?.split('?')[0] !== '/api/checkout') return next()
     const reply = (status: number, data: unknown) => { res.statusCode = status; res.setHeader('Content-Type', 'application/json'); res.setHeader('Cache-Control','no-store'); res.end(JSON.stringify(data)) }
     if (req.method !== 'POST') return reply(405, {error:'Method not allowed'})
-    if (req.headers.origin !== (env.PUBLIC_URL || `http://${req.headers.host}`)) return reply(403,{error:'Please order from the website checkout.'})
+    if (!allowedOrigin(req,env)) return reply(403,{error:'Please order from the website checkout.'})
     if (!env.OMS_URL || !env.OMS_WEBSITE_TOKEN) return reply(503,{error:'Ordering is temporarily unavailable. Your cart is saved; please try again shortly.'})
     let body = ''
     try {
