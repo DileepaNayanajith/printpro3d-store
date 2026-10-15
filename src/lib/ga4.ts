@@ -8,6 +8,7 @@ type GWindow=Window & {dataLayer?:unknown[];gtag?:(...args:unknown[])=>void;[key
 const browser=()=>window as unknown as GWindow
 let active=false, installed=false, lastPage='', lastSearch='', lastSearchAt=0, lastShipping='', checking=false
 let getLines:()=>Line[]=()=>[]
+let debugSession=false
 let landingUrl=''
 let currentPath=()=>location.pathname
 function pageLocation(path:string) {const url=new URL(location.href);const landing=new URL(landingUrl || location.href);for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'])if(!url.searchParams.has(key) && landing.searchParams.has(key))url.searchParams.set(key,landing.searchParams.get(key)!);return safeLocation(url.href,path)}
@@ -20,7 +21,7 @@ export function track(name:string,params:Record<string,unknown>={}) {
   browser().gtag?.('event',name,{...params,send_to:MEASUREMENT_ID,page_location:pageLocation(path),page_title:seoFor(path,catalog).title,page_referrer:referrer(),...(debug()?{debug_mode:true}:{})})
 }
 function referrer(){try{return new URL(document.referrer).origin+'/'}catch{return ''}}
-function debug(){return new URLSearchParams(location.search).get('ga_debug')==='1'}
+function debug(){return debugSession || new URLSearchParams(location.search).get('ga_debug')==='1'}
 export function trackCart(name:string,lines:Line[]) {const data=ecommerce(lines,catalog);if(data.items.length)track(name,data)}
 export function trackSearch(input:string) {if(!input.trim() || !analyticsConsent.value)return;const term=safeSearch(input,catalog),key=input.trim().toLowerCase();if(key===lastSearch && Date.now()-lastSearchAt<1000)return;lastSearch=key;lastSearchAt=Date.now();track('search',{search_term:term})}
 export function trackShipping(lines:Line[]) {const data=ecommerce(lines,catalog),key=JSON.stringify(data);if(key===lastShipping || !analyticsConsent.value)return;lastShipping=key;track('add_shipping_info',{...data,shipping_tier:'islandwide_delivery'})}
@@ -64,7 +65,7 @@ async function page() {
   void reconcileOrders()
 }
 export function installGa4(router:Router,cart:()=>Line[]) {
-  if(installed)return;installed=true;landingUrl=location.href;getLines=cart;currentPath=()=>router.currentRoute.value.path
+  if(installed)return;installed=true;debugSession=debug();landingUrl=location.href;getLines=cart;currentPath=()=>router.currentRoute.value.path
   readConsent()
   watch(analyticsConsent,accepted=>{
     const w=browser();w[`ga-disable-${MEASUREMENT_ID}`]=!accepted

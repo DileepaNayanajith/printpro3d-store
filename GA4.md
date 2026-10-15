@@ -58,9 +58,11 @@ Deploy this repository to the existing PRINTPRO3D STORE Railway service using it
 
 ## Verify in GA4
 
-1. Open https://printpro3d.lk/products/1021?ga_debug=1&utm_source=whatsapp&utm_medium=social&utm_campaign=store_launch and accept analytics. Keep ga_debug=1 on URLs used for debug checks; it is not sent as a campaign or page parameter.
+1. Open https://printpro3d.lk/products/1021?ga_debug=1&utm_source=whatsapp&utm_medium=social&utm_campaign=store_launch and accept analytics. Debug mode persists for client-side navigation in that tab until reload; ga_debug is not sent as a campaign or page parameter.
 2. Open GA4 Admin > Data display > DebugView for PRINTPRO3D Website; select the test device. Check page_view and view_item, then add an item, open cart and checkout to see the corresponding events. Repeated same-route navigation must not duplicate page_view. Do not place a test production order just to generate revenue.
 3. Reports > Realtime shows consented activity; acquisition reports take processing time. Standard reports can take 24–48 hours. DebugView may be blocked by browser privacy tools even if app logic works.
 4. Purchase and shipping are verified safely in automated tests. For a genuine consented signed-in order, staff confirmation followed by a store visit should produce one purchase; refresh should not repeat it.
 5. Reject or withdraw via footer Privacy settings; no subsequent analytics events should be sent. Google tag is absent on a fresh rejected visit.
 6. Share tagged links using utm_source=facebook / instagram / whatsapp and utm_medium=social. Untagged WhatsApp links can appear as Direct because WhatsApp often supplies no referrer. UTMs cannot recover attribution missing from the incoming link.
+
+Railway upload recovery: local uploads timed out during code snapshot creation. The existing STORE service is now connected to DileepaNayanajith/printpro3d-store, branch main, and deployments can build the exact pushed commit directly from GitHub. Future pushes to main may trigger STORE deployments. No OMS source/settings were changed.

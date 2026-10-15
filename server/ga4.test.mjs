@@ -64,13 +64,13 @@ test('real tracker: opt-in only, one tag and pageview, ecommerce, withdrawal and
   const events=()=>window.dataLayer.map(args=>Array.from(args)).filter(args=>args[0]==='event')
   assert.equal(scripts.length,1);assert.ok(scripts[0].src.endsWith(MEASUREMENT_ID));assert.equal(events().filter(e=>e[1]==='page_view').length,1);assert.equal(events().filter(e=>e[1]==='view_item').length,1)
   hook(null,null,null);await new Promise(resolve=>setImmediate(resolve));assert.equal(events().filter(e=>e[1]==='page_view').length,1)
-  for(const path of ['/cart','/checkout']){route.value.path=path;hook(null,null,null);await new Promise(resolve=>setImmediate(resolve))}
+  for(const path of ['/cart','/checkout']){location.search='';route.value.path=path;hook(null,null,null);await new Promise(resolve=>setImmediate(resolve))}
   ga.trackCart('add_to_cart',lines);ga.trackCart('remove_from_cart',lines);ga.trackShipping(lines);ga.trackShipping(lines);ga.trackSearch('private@email.com');ga.trackWhatsapp('whatsapp_checkout','custom_print')
   ga.recordOrder('WEB-000123',lines,400,'cod');assert.equal(events().filter(e=>e[1]==='purchase').length,0)
   orderResponses.push({reference:'WEB-000123',order_reference:'PP3D-000123',status:'awaiting_booking',payment:'cod',total_cents:(lines[0].price+400)*100})
   hook(null,null,null);await new Promise(resolve=>setImmediate(resolve));hook(null,null,null);await new Promise(resolve=>setImmediate(resolve))
   for(const name of ['view_cart','begin_checkout','add_to_cart','remove_from_cart','add_shipping_info','search','whatsapp_checkout','order_submitted','purchase'])assert.equal(events().filter(e=>e[1]===name).length,1,name)
-  assert.ok(!JSON.stringify(events()).includes('secret@example'));assert.ok(!JSON.stringify(events()).includes('private@email'))
+  assert.ok(events().every(e=>e[2].debug_mode===true));assert.ok(!JSON.stringify(events()).includes('secret@example'));assert.ok(!JSON.stringify(events()).includes('private@email'))
   const count=events().length;consent.chooseConsent(false);ga.trackCart('add_to_cart',lines);assert.equal(events().length,count);assert.equal(reloads,1);assert.equal(storage.getItem('pp3d-ga-orders'),null)
  }finally{for(const [key,desc]of originals){if(desc)Object.defineProperty(globalThis,key,desc);else delete globalThis[key]}}
 })
