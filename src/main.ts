@@ -4,6 +4,8 @@ import './style.css'
 import App from './App.vue'
 import router from './router/index'
 import { installSeo } from './lib/seo-client'
+import { installGa4 } from './lib/ga4'
+import { useCartStore } from './stores/cartStore'
 import { startAnalytics } from './lib/analytics'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
@@ -24,3 +26,5 @@ createApp(App)
   .use(pinia)
   .use(Toast)
   .mount('#app')
+
+void router.isReady().then(() => installGa4(router, () => useCartStore(pinia).items))

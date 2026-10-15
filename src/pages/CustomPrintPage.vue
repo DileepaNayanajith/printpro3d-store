@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trackWhatsapp } from '../lib/ga4'
 import { computed, ref } from 'vue'
 import { ArrowPathIcon, CheckCircleIcon, CloudArrowUpIcon, CubeTransparentIcon, DocumentTextIcon } from '@heroicons/vue/24/outline'
 import { useToast } from 'vue-toastification'
@@ -60,6 +61,7 @@ const prepareQuote = () => {
     'Please confirm the final price, print time and delivery options. I will send the STL file in this chat.'
   ].join('\n')
 
+  trackWhatsapp('whatsapp_checkout','custom_print')
   window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
   toast.success('Opening your quote request in WhatsApp')
 }

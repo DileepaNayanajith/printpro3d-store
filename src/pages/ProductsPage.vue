@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { trackSearch } from '../lib/ga4'
+import { onBeforeUnmount } from 'vue'
 import { useBuyNow } from '../composables/useBuyNow'
 const { buyNow } = useBuyNow()
 import { useRouter } from 'vue-router'
@@ -26,6 +28,9 @@ watch(() => route.query, query => {
   search.value = typeof query.q === 'string' ? query.q : ''
   selectedCategory.value = typeof query.category === 'string' ? query.category : 'all'
 }, { immediate: true })
+let searchTimer:ReturnType<typeof setTimeout> | undefined
+function recordSearch() {clearTimeout(searchTimer);searchTimer=setTimeout(()=>trackSearch(search.value),500)}
+onBeforeUnmount(()=>clearTimeout(searchTimer))
 const sortBy = ref('featured')
 const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
 const categoryLabel = (category: string) => categoryLabels[category] || category.replace(/-/g, ' ')
@@ -80,7 +85,7 @@ const toggleCompare = (product: Product) => {
       <div class="catalog-controls mt-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-2 grid-cols-[1fr_auto]">
         <label class="relative block min-w-0">
           <MagnifyingGlassIcon class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-          <input v-model="search" aria-label="Search products" type="search" placeholder="Search products..." class="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-4 text-slate-900 outline-none transition placeholder:text-slate-600 focus:border-cyan-400/60" />
+          <input v-model="search" @input="recordSearch" aria-label="Search products" type="search" placeholder="Search products..." class="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-4 text-slate-900 outline-none transition placeholder:text-slate-600 focus:border-cyan-400/60" />
         </label>
         <select aria-label="Sort products" v-model="sortBy" class="h-11 rounded-2xl border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-900 outline-none focus:border-cyan-400/60">
           <option value="featured">Featured</option><option value="priceLow">Price: Low to high</option><option value="priceHigh">Price: High to low</option><option value="name">Name: A–Z</option>

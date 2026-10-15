@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import CookieConsent from './components/CookieConsent.vue'
+import { consentOpen } from './lib/consent'
+import { trackSearch } from './lib/ga4'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MoonIcon, SunIcon, Bars3Icon, MagnifyingGlassIcon, HeartIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/vue/24/outline'
@@ -15,7 +18,7 @@ const compare = useCompareStore()
 const route = useRoute()
 const router = useRouter()
 const headerSearch = ref('')
-const searchProducts = () => router.push({ path: '/products', query: headerSearch.value.trim() ? { q: headerSearch.value.trim() } : {} })
+const searchProducts = () => { trackSearch(headerSearch.value); return router.push({ path: '/products', query: headerSearch.value.trim() ? { q: headerSearch.value.trim() } : {} }) }
 const mobileMenuOpen = ref(false)
 const year = new Date().getFullYear()
 const navLinks = [{ label: 'Home', to: '/' }, { label: 'Products', to: '/products' }, { label: 'Custom Print', to: '/custom-print' }, { label: 'Compare', to: '/compare' }, { label: 'My account', to: '/account' }, { label: 'About', to: '/about' }]
@@ -66,11 +69,12 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
     </nav>
     <main><router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" /></transition></router-view></main>
     <LiveChat v-if="!isAdminArea" />
+    <CookieConsent v-if="!isAdminArea" />
     <footer v-if="!isAdminArea" class="border-t border-slate-200 bg-slate-50">
       <div class="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-3">
         <div><p class="text-xl font-black">PRINTPRO<span class="text-blue-600">3D</span></p><p class="mt-4 max-w-sm text-sm leading-6 text-slate-600">Premium 3D printing, RC products and engineering solutions built for makers in Sri Lanka.</p></div>
         <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Explore</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-600"><router-link to="/products" class="hover:text-blue-600">Products</router-link><router-link to="/custom-print" class="hover:text-blue-600">Custom STL Print</router-link><router-link to="/compare" class="hover:text-blue-600">Compare</router-link><router-link to="/about" class="hover:text-blue-600">About</router-link><router-link to="/contact" class="hover:text-blue-600">Contact</router-link></div></div>
-        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Policies</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-600"><router-link to="/terms" class="hover:text-blue-600">Terms & Conditions</router-link><router-link to="/warranty" class="hover:text-blue-600">Warranty Policy</router-link></div></div>
+        <div><p class="text-sm font-bold uppercase tracking-widest text-slate-500">Policies</p><div class="mt-4 flex flex-col gap-3 text-sm text-slate-600"><router-link to="/terms" class="hover:text-blue-600">Terms & Conditions</router-link><router-link to="/privacy">Privacy policy</router-link><button class="text-left" @click="consentOpen = true">Privacy settings</button><router-link to="/warranty" class="hover:text-blue-600">Warranty Policy</router-link></div></div>
       </div>
       <div class="border-t border-slate-200 py-6 text-center text-xs text-slate-500">© {{ year }} PRINTPRO3D. All rights reserved.</div>
     </footer>

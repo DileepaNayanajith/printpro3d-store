@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trackShipping, recordOrder } from '../lib/ga4'
 import { productSku } from '../data/catalog'
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -19,6 +20,7 @@ const placeOrder = async () => {
   if (!cart.items.length) return router.push('/products')
   submitting.value = true; error.value = ''
   try {
+    trackShipping(cart.items)
     const payload = { ...details, items: cart.items.map(item => ({id:item.id, quantity:item.quantity, color:item.color})), expected_total_cents: Math.round(orderTotal.value*100) }
     const fingerprint = JSON.stringify(payload)
     let pending: {fingerprint:string, key:string} | null = null
@@ -31,6 +33,7 @@ const placeOrder = async () => {
     const result = await response.json()
     if (!response.ok || !result.reference) throw new Error(result.error || 'Could not save your order. Please try again.')
     sessionStorage.setItem('oms-order-receipt',JSON.stringify({...result,payment:details.payment,total:orderTotal.value}))
+    recordOrder(result.reference,cart.items,deliveryFee.value,details.payment)
     cart.clearCart()
     localStorage.removeItem('oms-checkout-pending')
     await router.push('/success')

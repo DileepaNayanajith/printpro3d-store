@@ -1,3 +1,5 @@
+import { watch } from 'vue'
+import { analyticsConsent } from './consent'
 import type { Router } from 'vue-router'
 
 export function startAnalytics(router: Router) {
@@ -21,11 +23,12 @@ export function startAnalytics(router: Router) {
     return visitor
   }
   function ping() {
-    if(document.hidden)return
+    if(document.hidden || !analyticsConsent.value)return
     const payload={visitor:identity(),event,page,device,source}
     event=null
     void fetch('/api/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(()=>{})
   }
+  watch(analyticsConsent,accepted=>{if(accepted){event=crypto.randomUUID();ping()}else{visitor='';day='';event=null}}, {flush:'sync'})
   router.afterEach((to,_from,failure)=>{
     if(failure)return
     const allowed=['/','/products','/about','/terms','/warranty','/compare','/contact','/custom-print','/cart','/checkout','/success','/wishlist','/account']

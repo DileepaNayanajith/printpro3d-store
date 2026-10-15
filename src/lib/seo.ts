@@ -19,6 +19,7 @@ export const publicPages:Record<string,{title:string;description:string}> = {
  '/about':{title:'About PRINTPRO3D | Sri Lankan Electronics & 3D Printing Store',description:'Learn about PRINTPRO3D, a Sri Lankan online store for makers, electronics projects, 3D printing and RC enthusiasts.'},
  '/contact':{title:'Contact PRINTPRO3D | Product & 3D Printing Support Sri Lanka',description:'Contact PRINTPRO3D for product questions, custom 3D printing enquiries and delivery support in Sri Lanka.'},
  '/terms':{title:'Terms & Conditions | PRINTPRO3D Sri Lanka',description:'Read the PRINTPRO3D terms and conditions for product orders, payments and delivery in Sri Lanka.'},
+ '/privacy':{title:'Privacy & Cookie Policy | PRINTPRO3D',description:'How PRINTPRO3D handles orders, optional analytics and your cookie choices. Change analytics consent at any time in Privacy settings.'},
  '/warranty':{title:'Warranty & Returns Policy | PRINTPRO3D Sri Lanka',description:'Read PRINTPRO3D warranty and return information before ordering electronics, RC products and 3D printed items.'},
 }
 export function seoFor(input:string, catalog:SeoProduct[]) {

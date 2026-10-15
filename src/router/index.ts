@@ -19,6 +19,7 @@ export function createStoreRouter(server=false) {
 const router = createRouter({
   history: server ? createMemoryHistory() : createWebHistory(),
   routes: [
+    {path:'/privacy',component:()=>import('../pages/PrivacyPage.vue')},
     { path: '/account', component: () => import('../pages/AccountPage.vue') },
     {
       path: '/',
