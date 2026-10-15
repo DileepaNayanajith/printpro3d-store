@@ -63,7 +63,7 @@ button { cursor: pointer; }
   .storefront .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .storefront .store-header { padding-inline: 1rem; }
   .storefront .header-actions .icon-button { width: 2.5rem; height: 2.5rem; }
-  .storefront .store-brand > span:first-child { width: 2rem; height: 2rem; flex-shrink: 0; }
+  .storefront .store-brand > .brand-mark { width: 2rem; height: 2rem; flex-shrink: 0; }
   .storefront .catalog-controls input { padding-left: 2.25rem; padding-right: .5rem; font-size: .8rem; }
   .storefront .catalog-controls svg { left: .65rem; }
 }

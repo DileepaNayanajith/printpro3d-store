@@ -38,7 +38,7 @@ const isActive = (to: string) => to === '/' ? route.path === '/' : route.path.st
     <nav v-if="!isAdminArea" class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div class="store-header mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
         <router-link to="/" class="store-brand flex min-w-0 items-center gap-2" aria-label="PRINTPRO3D home">
-          <span class="grid h-10 w-10 place-items-center rounded-xl bg-blue-100 font-black text-slate-950">P3</span>
+          <img src="/favicon.svg?v=printpro3d-1" alt="" width="40" height="40" class="brand-mark h-10 w-10 shrink-0 rounded-xl" />
           <span class="brand-name font-black tracking-tight sm:text-2xl">PRINTPRO<span class="text-blue-600">3D</span></span>
         </router-link>
         <div class="hidden items-center gap-5 xl:flex">
