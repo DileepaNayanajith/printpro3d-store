@@ -1,5 +1,143 @@
 [
   {
+    "id": 1027,
+    "title": "S119 Drone Battery",
+    "sku": "P3D-S119-BATTERY",
+    "price": 2200,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/s119-battery-reference.jpg",
+    "description": "Replacement battery for the S119 drone. Price is for one battery. Confirm the casing, connector and battery specification against your existing pack before ordering.",
+    "features": [
+      "For S119 drones",
+      "One replacement battery"
+    ],
+    "images": [
+      "/products/s119-battery-reference.jpg"
+    ],
+    "photoNote": "Online reference photo; appearance, labels and connector layout may differ from current stock. Specifications printed in a reference photo are not a capacity or performance guarantee. Price is for one listed part only.",
+    "stock": 2,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1028,
+    "title": "E88 Drone Battery",
+    "sku": "P3D-E88-BATTERY",
+    "price": 1100,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/e88-battery-reference.jpg",
+    "description": "Replacement battery for the E88 drone. Price is for one battery. Match the casing, connector and battery specification to your existing pack before ordering.",
+    "features": [
+      "For E88 drones",
+      "One replacement battery"
+    ],
+    "images": [
+      "/products/e88-battery-reference.jpg"
+    ],
+    "photoNote": "Online reference photo; appearance, labels and connector layout may differ from current stock. Specifications printed in a reference photo are not a capacity or performance guarantee. Price is for one listed part only.",
+    "stock": 5,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1029,
+    "title": "E88 Drone Arm — Single",
+    "sku": "P3D-E88-ARM",
+    "price": 750,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/e88-arm-reference.jpg",
+    "description": "Replacement arm for an E88 drone. Price is per one arm, not a complete set. Confirm the required front/rear and left/right position, colour and included components with PRINTPRO3D before ordering.",
+    "features": [
+      "For E88 drones",
+      "Price per one arm",
+      "Confirm arm position before ordering"
+    ],
+    "images": [
+      "/products/e88-arm-reference.jpg"
+    ],
+    "photoNote": "Online reference photo; appearance, labels and connector layout may differ from current stock. Specifications printed in a reference photo are not a capacity or performance guarantee. Price is for one listed part only. The reference image shows several arm positions; Rs. 750 is for one arm only. Motor and propeller inclusion must be confirmed.",
+    "stock": null,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1030,
+    "title": "E88 / E99 / K13 Brushed Drone Camera",
+    "sku": "P3D-E88-E99-K13-CAMERA",
+    "price": 1250,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/e88-e99-k13-camera-reference.jpg",
+    "description": "Replacement camera for brushed-model variants of E88, E99 and K13 drones. Price is for one camera. Check the connector, mounting and drone revision before ordering; compatibility should not be assumed for brushless variants.",
+    "features": [
+      "For E88 / E99 / K13 brushed variants",
+      "One replacement camera",
+      "Confirm connector and revision"
+    ],
+    "images": [
+      "/products/e88-e99-k13-camera-reference.jpg"
+    ],
+    "photoNote": "Online reference photo; appearance, labels and connector layout may differ from current stock. Specifications printed in a reference photo are not a capacity or performance guarantee. Price is for one listed part only.",
+    "stock": null,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1031,
+    "title": "S119 Drone Camera",
+    "sku": "P3D-S119-CAMERA",
+    "price": 2000,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/image-unavailable.svg",
+    "description": "Replacement camera for the S119 drone. Price is for one camera. Confirm the mounting, wiring connector and drone revision before ordering.",
+    "features": [
+      "For S119 drones",
+      "One replacement camera",
+      "Confirm connector and revision"
+    ],
+    "images": null,
+    "photoNote": "An accurate model-specific product photo is not available yet. Contact PRINTPRO3D to confirm the part before ordering.",
+    "stock": null,
+    "badge": "Photo coming soon",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1032,
+    "title": "S119 Drone Motor with ESC",
+    "sku": "P3D-S119-MOTOR-ESC",
+    "price": 1550,
+    "category": "drone-spare-parts",
+    "thumbnail": "/products/image-unavailable.svg",
+    "description": "Replacement S119 drone motor supplied with an electronic speed controller (ESC). Price is for one motor with ESC. Confirm the required motor position/rotation, connector and drone revision before ordering.",
+    "features": [
+      "For S119 drones",
+      "One motor with ESC",
+      "Confirm motor position and connector"
+    ],
+    "images": null,
+    "photoNote": "An accurate model-specific product photo is not available yet. Contact PRINTPRO3D to confirm the part before ordering.",
+    "stock": null,
+    "badge": "Photo coming soon",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
     "id": 1025,
     "title": "RC Rock Crawler — 2WD",
     "sku": "P3D-RC-CRAWLER-2WD",

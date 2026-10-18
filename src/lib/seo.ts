@@ -1,7 +1,7 @@
 export const ORIGIN = 'https://printpro3d.lk'
 export type SeoProduct = { id:number;title:string;sku?:string;price:number;thumbnail:string;category:string;description?:string;features?:string[];images?:string[]|null;stock?:number|null;published?:boolean;deleted?:boolean;updatedAt?:string;lastModified?:string }
 export const publicProducts = <T extends SeoProduct>(products:T[]) => products.filter(p=>p.published!==false && !p.deleted && Number.isInteger(p.id) && Number.isFinite(p.price) && !!p.title && !!p.thumbnail)
-export const categoryName = (name:string) => ({'development-boards':'Development Boards',sensors:'Sensors',displays:'OLED Displays',robotics:'Robotics & DIY Kits',filament:'3D Printing Filament','display-racks':'Model Car Display Racks','rc-cars':'RC Cars & Trucks',drones:'Camera Drones','3d-printed-models':'3D Printed Models'}[name] || name.replace(/-/g,' '))
+export const categoryName = (name:string) => ({'development-boards':'Development Boards',sensors:'Sensors',displays:'OLED Displays',robotics:'Robotics & DIY Kits',filament:'3D Printing Filament','display-racks':'Model Car Display Racks','rc-cars':'RC Cars & Trucks',drones:'Camera Drones','drone-spare-parts':'Drone Spare Parts','3d-printed-models':'3D Printed Models'}[name] || name.replace(/-/g,' '))
 const descriptions:Record<number,string> = {
   1: 'A feature-packed camera drone built for smooth flights, stable hovering and exciting aerial views.',
   2: 'A compact camera drone paired with a display remote for a more convenient flying experience.',

@@ -32,7 +32,7 @@ let searchTimer:ReturnType<typeof setTimeout> | undefined
 function recordSearch() {clearTimeout(searchTimer);searchTimer=setTimeout(()=>trackSearch(search.value),500)}
 onBeforeUnmount(()=>clearTimeout(searchTimer))
 const sortBy = ref('featured')
-const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
+const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'drone-spare-parts': 'Drone spare parts', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
 const categoryLabel = (category: string) => categoryLabels[category] || category.replace(/-/g, ' ')
 
 const wishlist = useWishlistStore()

@@ -5,7 +5,7 @@ import catalog from '../data/products.json'
 import ProductImage from './ProductImage.vue'
 defineProps<{ selected: string }>()
 const emit=defineEmits<{ select:[category:string] }>()
-const departments=[{id:'development-boards',label:'Development boards'},{id:'sensors',label:'Sensors & modules'},{id:'displays',label:'OLED displays'},{id:'robotics',label:'Robotics & kits'},{id:'filament',label:'3D printing filament'},{id:'3d-printed-models',label:'3D printed models'},{id:'display-racks',label:'Display racks'},{id:'rc-cars',label:'RC cars & trucks'},{id:'drones',label:'Camera drones'}]
+const departments=[{id:'development-boards',label:'Development boards'},{id:'sensors',label:'Sensors & modules'},{id:'displays',label:'OLED displays'},{id:'robotics',label:'Robotics & kits'},{id:'filament',label:'3D printing filament'},{id:'3d-printed-models',label:'3D printed models'},{id:'display-racks',label:'Display racks'},{id:'rc-cars',label:'RC cars & trucks'},{id:'drones',label:'Camera drones'},{id:'drone-spare-parts',label:'Drone spare parts'}]
 const count=(id:string)=>catalog.filter(p=>p.category===id).length
 const drawer=ref<HTMLDialogElement|null>(null)
 const select=(id:string)=>{emit('select',id);drawer.value?.close()}

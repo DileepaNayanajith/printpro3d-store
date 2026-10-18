@@ -136,3 +136,15 @@ test('new crawler prices remain authoritative through checkout',async t=>{
  assert.equal(response.status,201)
  assert.equal(received[0].body.total_cents,1470000)
 })
+
+test('drone spares keep stated unit prices and enforce battery stock limits',async t=>{
+ const {post,received}=await fixture(t)
+ for(const [id,quantity] of [[1027,3],[1028,6]])assert.equal((await post({...order,items:[{id,quantity}],expected_total_cents:999999})).status,400)
+ assert.equal(received.length,0)
+ const items=[1027,1028,1029,1030,1031,1032].map(id=>({id,quantity:1}))
+ const response=await post({...order,items,expected_total_cents:925000})
+ assert.equal(response.status,201)
+ assert.equal(received[0].body.total_cents,925000)
+ assert.match(received[0].body.product,/S119 Drone Battery/)
+ assert.match(received[0].body.product,/S119 Drone Motor with ESC/)
+})
