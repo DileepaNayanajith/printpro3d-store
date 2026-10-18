@@ -1,5 +1,53 @@
 [
   {
+    "id": 1025,
+    "title": "RC Rock Crawler — 2WD",
+    "sku": "P3D-RC-CRAWLER-2WD",
+    "price": 2400,
+    "category": "rc-cars",
+    "thumbnail": "/products/rc-crawler-2wd-reference.jpg",
+    "description": "A 2WD remote-control rock crawler for RC play with off-road styling. Contact PRINTPRO3D to confirm the exact model, body design, colour and package contents before ordering.",
+    "features": [
+      "2WD drive",
+      "Remote-control car",
+      "Off-road crawler style"
+    ],
+    "images": [
+      "/products/rc-crawler-2wd-reference.jpg"
+    ],
+    "photoNote": "Reference image only, not a photo of our current stock. Exact model, body design, colour and included accessories are not verified. Contact PRINTPRO3D to confirm these details before ordering.",
+    "stock": null,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1026,
+    "title": "RC Rock Climber — 4WD",
+    "sku": "P3D-RC-CLIMBER-4WD",
+    "price": 11900,
+    "category": "rc-cars",
+    "thumbnail": "/products/rc-climber-4wd-reference.jpg",
+    "description": "A four-wheel-drive remote-control rock climber for RC enthusiasts, with off-road crawler styling. Contact PRINTPRO3D to confirm the exact model, body design, colour and package contents before ordering.",
+    "features": [
+      "4WD drive",
+      "Remote-control car",
+      "Off-road crawler style"
+    ],
+    "images": [
+      "/products/rc-climber-4wd-reference.jpg"
+    ],
+    "photoNote": "Reference image only, not a photo of our current stock. Exact model, body design, colour and included accessories are not verified. Contact PRINTPRO3D to confirm these details before ordering.",
+    "stock": null,
+    "badge": "Reference image",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
     "id": 1021,
     "title": "Mochi Companion Robot",
     "sku": "P3D-MOCHI-ROBOT",

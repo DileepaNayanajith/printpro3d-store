@@ -129,3 +129,10 @@ test('new Mochi, skeleton and model rack products keep confirmed prices through 
  assert.equal((await post({...order,items,expected_total_cents:1})).status,409)
  assert.equal(received.length,1)
 })
+
+test('new crawler prices remain authoritative through checkout',async t=>{
+ const {post,received}=await fixture(t)
+ const response=await post({...order,items:[{id:1025,quantity:1},{id:1026,quantity:1}],expected_total_cents:1470000})
+ assert.equal(response.status,201)
+ assert.equal(received[0].body.total_cents,1470000)
+})
