@@ -16,41 +16,40 @@ const journey = [
 
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900">
-    <section class="relative isolate overflow-hidden border-b border-slate-200 px-5 py-24 sm:px-8 lg:py-32">
-      <div class="absolute left-1/2 top-0 -z-10 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-100/10 blur-3xl"></div>
+    <section class="border-b border-slate-200 px-[var(--pp-gutter)] py-[clamp(2rem,1.5rem+3vw,4.5rem)]">
       <div class="mx-auto max-w-7xl">
-        <div class="max-w-4xl" data-aos="fade-up">
+        <div class="max-w-4xl">
           <p class="section-kicker">About PRINTPRO3D</p>
-          <h1 class="mt-5 text-5xl font-black leading-[1.02] tracking-tight sm:text-7xl">Technology for people who love to <span class="text-blue-600">build.</span></h1>
-          <p class="mt-7 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">PRINTPRO3D brings exciting RC technology, camera drones and engineering-inspired products together in a simple, modern shopping experience.</p>
+          <h1 class="display-title mt-3">Technology for people who love to <span class="text-blue-600">build.</span></h1>
+          <p class="lead mt-4 max-w-2xl">PRINTPRO3D brings exciting RC technology, camera drones and engineering-inspired products together in a simple, modern shopping experience.</p>
         </div>
       </div>
     </section>
 
-    <section class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+    <section class="mx-auto max-w-7xl px-[var(--pp-gutter)] py-[clamp(2.5rem,2rem+3vw,4.5rem)]">
       <div class="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-        <div data-aos="fade-up"><p class="section-kicker">Our approach</p><h2 class="section-title">Focused on better choices.</h2><p class="mt-5 text-lg leading-8 text-slate-600">We keep the store clear and easy to use so customers can spend less time searching and more time creating, flying and exploring.</p></div>
+        <div><p class="section-kicker">Our approach</p><h2 class="section-title">Focused on better choices.</h2><p class="lead mt-4">We keep the store clear and easy to use so customers can spend less time searching and more time creating, flying and exploring.</p></div>
         <div class="grid gap-5 sm:grid-cols-3">
-          <article v-for="(pillar, index) in pillars" :key="pillar.title" class="glass-card" data-aos="fade-up" :data-aos-delay="index * 80"><component :is="pillar.icon" class="h-8 w-8 text-blue-600" /><h3 class="mt-7 text-lg font-black">{{ pillar.title }}</h3><p class="mt-3 text-sm leading-6 text-slate-600">{{ pillar.text }}</p></article>
+          <article v-for="pillar in pillars" :key="pillar.title" class="glass-card"><component :is="pillar.icon" class="h-8 w-8 text-blue-600" /><h3 class="mt-7 text-lg font-black">{{ pillar.title }}</h3><p class="mt-3 text-sm leading-6 text-slate-600">{{ pillar.text }}</p></article>
         </div>
       </div>
     </section>
 
-    <section class="border-y border-slate-200 bg-slate-100 py-24">
-      <div class="mx-auto max-w-7xl px-5 sm:px-8">
-        <div class="text-center" data-aos="fade-up"><p class="section-kicker">How it works</p><h2 class="section-title">From discovery to delivery.</h2></div>
+    <section class="border-y border-slate-200 bg-white py-[clamp(2.5rem,2rem+3vw,4.5rem)]">
+      <div class="mx-auto max-w-7xl px-[var(--pp-gutter)]">
+        <div class="text-center"><p class="section-kicker">How it works</p><h2 class="section-title">From discovery to delivery.</h2></div>
         <div class="mt-14 grid gap-5 md:grid-cols-3">
-          <article v-for="(step, index) in journey" :key="step.number" class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7" data-aos="fade-up" :data-aos-delay="index * 90">
+          <article v-for="step in journey" :key="step.number" class="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <span class="absolute right-5 top-2 text-7xl font-black text-slate-900/[0.04]">{{ step.number }}</span><component :is="step.icon" class="h-8 w-8 text-blue-600" /><h3 class="mt-8 text-xl font-black">{{ step.title }}</h3><p class="mt-3 leading-7 text-slate-600">{{ step.text }}</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="px-5 py-24 sm:px-8">
-      <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-blue-100 px-7 py-12 text-slate-950 sm:px-12 md:flex-row md:items-center">
-        <div><p class="text-sm font-black uppercase tracking-[0.2em]">Start exploring</p><h2 class="mt-3 text-3xl font-black sm:text-4xl">Find the product for your next adventure.</h2></div>
-        <router-link to="/products" class="shrink-0 rounded-full bg-slate-50 px-7 py-4 font-bold text-slate-900 transition hover:-translate-y-0.5">Browse products</router-link>
+    <section class="px-[var(--pp-gutter)] py-[clamp(2.5rem,2rem+3vw,4.5rem)]">
+      <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-2xl bg-blue-100 px-6 py-8 text-slate-950 sm:px-10 md:flex-row md:items-center">
+        <div><p class="eyebrow">Start exploring</p><h2 class="mt-2 text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-extrabold tracking-tight">Find the product for your next adventure.</h2></div>
+        <router-link to="/products" class="btn btn-primary shrink-0">Browse products</router-link>
       </div>
     </section>
   </div>

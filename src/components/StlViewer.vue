@@ -139,9 +139,9 @@ defineExpose({ resetView })
 </script>
 
 <template>
-  <div class="relative h-full min-h-[420px] overflow-hidden rounded-[1.5rem] bg-slate-900">
+  <div class="relative h-full min-h-[320px] overflow-hidden rounded-xl bg-[#0f172a] text-white">
     <div ref="container" class="absolute inset-0"></div>
-    <div v-if="!file" class="absolute inset-0 grid place-items-center p-8 text-center"><div><div class="mx-auto grid h-20 w-20 place-items-center rounded-full border border-dashed border-cyan-400/40 bg-cyan-400/10 text-3xl">3D</div><p class="mt-5 font-bold">Your STL preview will appear here</p><p class="mt-2 text-sm text-slate-500">Rotate with drag · Zoom with scroll</p></div></div>
+    <div v-if="!file" class="absolute inset-0 grid place-items-center p-8 text-center"><div><div class="mx-auto grid h-20 w-20 place-items-center rounded-full border border-dashed border-cyan-400/40 bg-cyan-400/10 text-3xl">3D</div><p class="mt-5 font-bold">Your STL preview will appear here</p><p class="mt-2 text-sm text-white/60">Rotate with drag · Zoom with scroll</p></div></div>
     <div v-if="error" class="absolute inset-x-4 bottom-4 rounded-xl bg-rose-500 px-4 py-3 text-sm font-bold text-white">{{ error }}</div>
   </div>
 </template>
