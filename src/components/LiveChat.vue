@@ -2,24 +2,10 @@
 import { nextTick, ref } from 'vue'
 import { ChatBubbleLeftRightIcon, PaperAirplaneIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
-defineProps<{ hideLauncher?: boolean }>()
 type Message = { id: number; from: 'support' | 'customer'; text: string }
 const isOpen = ref(false)
+defineExpose({ open: () => { isOpen.value = true } })
 const draft = ref('')
-const input = ref<HTMLInputElement | null>(null)
-let returnFocus: HTMLElement | null = null
-const open = async () => {
-  if (!isOpen.value) returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
-  isOpen.value = true
-  await nextTick()
-  input.value?.focus({ preventScroll: true })
-}
-const close = () => {
-  isOpen.value = false
-  returnFocus?.focus({ preventScroll: true })
-  returnFocus = null
-}
-defineExpose({ open })
 const messages = ref<Message[]>([
   { id: 1, from: 'support', text: 'Hi! Welcome to PRINTPRO3D 👋 How can we help you today?' },
 ])
@@ -35,8 +21,7 @@ const replies = [
 
 const scrollToLatest = async () => {
   await nextTick()
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  messageList.value?.scrollTo({ top: messageList.value.scrollHeight, behavior: reduced ? 'auto' : 'smooth' })
+  messageList.value?.scrollTo({ top: messageList.value.scrollHeight, behavior: 'smooth' })
 }
 
 const sendMessage = (text = draft.value) => {
@@ -55,50 +40,32 @@ const sendMessage = (text = draft.value) => {
 </script>
 
 <template>
-  <div @keydown.esc="close" class="store-live-chat">
-    <transition name="chat">
-      <section v-if="isOpen" role="dialog" aria-labelledby="chat-title" class="chat-panel">
-        <header class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-          <div class="flex min-w-0 items-center gap-3">
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent-soft text-accent"><ChatBubbleLeftRightIcon class="h-5 w-5" aria-hidden="true" /></span>
-            <div class="min-w-0"><h2 id="chat-title" class="text-sm font-bold text-ink">PRINTPRO3D Support</h2><p class="flex items-center gap-1.5 text-xs font-semibold text-ink-3"><span class="h-2 w-2 rounded-full bg-success" aria-hidden="true"></span> Online</p></div>
-          </div>
-          <button type="button" @click="close" class="icon-btn" aria-label="Close live chat"><XMarkIcon /></button>
+  <div @keydown.esc="isOpen = false" class="store-live-chat fixed bottom-5 right-5 z-[70] sm:bottom-7 sm:right-7">
+    <transition enter-active-class="transition duration-200" enter-from-class="translate-y-4 opacity-0 scale-95" leave-active-class="transition duration-150" leave-to-class="translate-y-4 opacity-0 scale-95">
+      <section v-if="isOpen" role="dialog" aria-label="PRINTPRO3D Support" class="chat-panel mb-4 flex h-[min(620px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-2xl shadow-black/50">
+        <header class="flex items-center justify-between bg-blue-100 px-5 py-4 text-slate-950">
+          <div class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-blue-600"><ChatBubbleLeftRightIcon class="h-5 w-5" /></span><div><h2 class="font-black">PRINTPRO3D Support</h2><p class="flex items-center gap-1.5 text-xs font-semibold"><span class="h-2 w-2 rounded-full bg-emerald-600"></span> Online</p></div></div>
+          <button @click="isOpen = false" class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-slate-50/10" aria-label="Close live chat"><XMarkIcon class="h-5 w-5" /></button>
         </header>
 
-        <div ref="messageList" class="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
+        <div ref="messageList" class="flex-1 space-y-3 overflow-y-auto p-4">
           <div v-for="message in messages" :key="message.id" :class="['flex', message.from === 'customer' ? 'justify-end' : 'justify-start']">
-            <p :class="['max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-6', message.from === 'customer' ? 'rounded-br-md bg-accent-fill font-semibold text-white' : 'rounded-bl-md bg-surface-2 text-ink']">{{ message.text }}</p>
+            <p :class="['max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-6' , message.from === 'customer' ? 'rounded-br-md bg-blue-100 font-semibold text-slate-950' : 'rounded-bl-md bg-slate-100 text-slate-700']">{{ message.text }}</p>
           </div>
-          <div class="flex flex-wrap gap-2 pt-1">
-            <button v-for="question in quickQuestions" :key="question" type="button" @click="sendMessage(question)" class="chip !min-h-9 !px-3 !text-xs">{{ question }}</button>
+          <div class="flex flex-wrap gap-2 pt-2">
+            <button v-for="question in quickQuestions" :key="question" @click="sendMessage(question)" class="rounded-full border border-cyan-400/30 px-3 py-2 text-xs font-bold text-blue-600 transition hover:bg-blue-100/10">{{ question }}</button>
           </div>
         </div>
 
-        <form class="flex gap-2 border-t border-line p-3" @submit.prevent="sendMessage()">
-          <input ref="input" v-model="draft" class="field field-sm min-w-0 flex-1 rounded-full" placeholder="Type your message..." aria-label="Chat message" />
-          <button type="submit" class="btn btn-primary !h-11 !w-11 shrink-0 !p-0" aria-label="Send message"><PaperAirplaneIcon aria-hidden="true" /></button>
+        <form class="flex gap-2 border-t border-slate-200 bg-slate-50 p-3" @submit.prevent="sendMessage()">
+          <input v-model="draft" class="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-100 px-4 text-sm text-slate-900 outline-none placeholder:text-slate-500 focus:border-cyan-400" placeholder="Type your message..." aria-label="Chat message" />
+          <button type="submit" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-blue-100 text-slate-950 transition hover:bg-blue-200" aria-label="Send message"><PaperAirplaneIcon class="h-5 w-5" /></button>
         </form>
       </section>
     </transition>
 
-    <button v-show="!hideLauncher" type="button" @click="isOpen ? close() : open()" class="live-chat-launcher" :aria-label="isOpen ? 'Close live chat' : 'Open live chat'" :aria-expanded="isOpen">
-      <XMarkIcon v-if="isOpen" class="h-6 w-6" aria-hidden="true" /><ChatBubbleLeftRightIcon v-else class="h-6 w-6" aria-hidden="true" />
+    <button @click="isOpen = !isOpen" class="live-chat-launcher ml-auto grid h-15 w-15 place-items-center rounded-full bg-blue-100 text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-1 hover:bg-blue-200" :aria-label="isOpen ? 'Close live chat' : 'Open live chat'">
+      <XMarkIcon v-if="isOpen" class="h-7 w-7" /><ChatBubbleLeftRightIcon v-else class="h-7 w-7" />
     </button>
   </div>
 </template>
-
-<style scoped>
-.store-live-chat { position: fixed; right: clamp(1rem, 2vw, 1.75rem); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 70; display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; pointer-events: none; }
-.store-live-chat > * { pointer-events: auto; }
-.chat-panel { display: flex; width: min(380px, calc(100vw - 2rem)); height: min(560px, calc(100dvh - 6.5rem)); flex-direction: column; overflow: hidden; border: 1px solid var(--pp-line); border-radius: 18px; background: var(--pp-surface); color: var(--pp-ink); box-shadow: var(--pp-shadow-pop); transform-origin: bottom right; }
-.live-chat-launcher { display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 999px; background: var(--pp-ink); color: var(--pp-bg); box-shadow: var(--pp-shadow-pop); transition: transform 0.2s var(--pp-ease), background-color 0.2s; }
-.live-chat-launcher:hover { transform: translateY(-2px); }
-.chat-enter-active, .chat-leave-active { transition: opacity 0.2s var(--pp-ease), transform 0.25s var(--pp-ease); }
-.chat-enter-from, .chat-leave-to { opacity: 0; transform: translateY(8px) scale(0.97); }
-@media (max-width: 639px) {
-  .store-live-chat { left: 0.75rem; right: 0.75rem; bottom: max(0.75rem, env(safe-area-inset-bottom)); }
-  .live-chat-launcher { display: none; }
-  .chat-panel { width: 100%; height: min(620px, calc(100dvh - 1.5rem)); }
-}
-</style>

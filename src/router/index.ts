@@ -18,13 +18,6 @@ import AdminLoginPage from '../pages/AdminLoginPage.vue'
 export function createStoreRouter(server=false) {
 const router = createRouter({
   history: server ? createMemoryHistory() : createWebHistory(),
-  // Back/forward restores the previous position; new pages and filters start at the top without animated scrolling.
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
-    if (to.hash) return { el: to.hash, top: (document.querySelector<HTMLElement>('.site-header')?.offsetHeight || 0) + 16 }
-    if (to.fullPath !== from.fullPath) return { top: 0 }
-    return false
-  },
   routes: [
     {path:'/privacy',component:()=>import('../pages/PrivacyPage.vue')},
     { path: '/account', component: () => import('../pages/AccountPage.vue') },

@@ -28,17 +28,17 @@ onMounted(async()=>{
 })
 </script>
 <template>
- <div class="mx-auto min-h-[70vh] max-w-5xl px-[var(--pp-gutter)] py-[clamp(1.5rem,1rem+2.5vw,3.5rem)] text-slate-900">
+ <div class="mx-auto min-h-[70vh] max-w-5xl px-5 py-12 text-slate-900">
   <p class="section-kicker">PRINTPRO3D customer account</p><h1 class="section-title mt-3">My orders</h1>
   <p v-if="loading" class="mt-8">Loading your account…</p>
   <p v-if="error" role="alert" class="my-5 rounded-xl bg-red-500/10 p-4 text-red-600">{{ error }}</p>
-  <section v-show="!customer && !loading" class="mt-8 max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-7">
+  <section v-show="!customer && !loading" class="mt-8 max-w-lg rounded-3xl border border-slate-200 p-7">
    <h2 class="text-2xl font-bold">{{ mode==='register'?'Create an account':'Welcome back' }}</h2>
    <p class="mt-3 text-sm text-slate-600">Email is not required. Sign in before checkout to save orders to your account.</p>
    <form class="mt-6 space-y-4" @submit.prevent="login()">
-    <label v-if="mode==='register'" class="block text-sm font-semibold text-slate-600">Your name<input v-model="form.name" required maxlength="150" autocomplete="name" class="account-field" /></label>
-    <label class="block text-sm font-semibold text-slate-600">Username<input v-model="form.username" required pattern="[A-Za-z0-9_.-]{3,40}" autocomplete="username" class="account-field" /></label>
-    <label class="block text-sm font-semibold text-slate-600">Password<input v-model="form.password" type="password" required minlength="10" maxlength="128" :autocomplete="mode==='register'?'new-password':'current-password'" class="account-field" /></label>
+    <label v-if="mode==='register'" class="block">Your name<input v-model="form.name" required maxlength="150" autocomplete="name" class="account-field" /></label>
+    <label class="block">Username<input v-model="form.username" required pattern="[A-Za-z0-9_.-]{3,40}" autocomplete="username" class="account-field" /></label>
+    <label class="block">Password<input v-model="form.password" type="password" required minlength="10" maxlength="128" :autocomplete="mode==='register'?'new-password':'current-password'" class="account-field" /></label>
     <p class="text-xs text-slate-600">Use at least 10 characters. Keep your password safe; password reset is not available yet.</p>
     <button :disabled="busy" class="primary-button w-full">{{ busy?'Please wait…':mode==='register'?'Create account':'Sign in' }}</button>
    </form>
@@ -49,8 +49,8 @@ onMounted(async()=>{
    <div class="flex items-center justify-between gap-4"><p>Hello, <strong>{{ customer.name }}</strong></p><button @click="logout" class="text-sm text-blue-600">Sign out</button></div>
    <p class="mt-4 text-sm text-slate-600">Only orders placed while signed in appear here. Guest or previous phone orders are not linked automatically.</p>
    <button @click="load" class="mt-4 text-sm text-blue-600 underline">Refresh order status</button>
-   <p v-if="!orders.length" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">No orders yet. <router-link to="/products" class="text-blue-600">Browse products →</router-link></p>
-   <article v-for="order in orders" :key="order.reference" class="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
+   <p v-if="!orders.length" class="mt-8 rounded-2xl bg-white/5 p-6">No orders yet. <router-link to="/products" class="text-blue-600">Browse products →</router-link></p>
+   <article v-for="order in orders" :key="order.reference" class="mt-6 rounded-3xl border border-slate-200 p-6">
     <div class="flex flex-wrap justify-between gap-4"><h2 class="text-xl font-bold">{{ order.reference }} <span v-if="order.order_reference" class="text-sm text-slate-600">· {{ order.order_reference }}</span></h2><span class="capitalize text-blue-600">{{ status(order.status) }}</span></div>
     <p class="mt-3">{{ order.product }}</p><p class="mt-2 text-slate-600">Total: Rs. {{ (order.total_cents/100).toLocaleString() }}</p>
     <div v-if="order.payment==='bank'" class="mt-4 rounded-xl bg-blue-100/10 p-4"><p>COD: Rs. 0 · {{ order.payment_verified?'Payment verified':'Awaiting payment verification' }}</p><p v-if="!order.payment_verified" class="mt-2 text-sm">Send {{ order.reference }} and your payment slip to 0721272082.</p><a v-if="!order.payment_verified" :href="slip(order.reference)" target="_blank" rel="noopener noreferrer" class="mt-2 inline-block text-blue-600 underline">Open WhatsApp</a></div>
@@ -60,4 +60,4 @@ onMounted(async()=>{
   </section>
  </div>
 </template>
-<style scoped>.account-field{margin-top:.5rem}button:disabled{opacity:.5}</style>
+<style scoped>.account-field{display:block;width:100%;margin-top:.5rem;border:1px solid #e2e8f0;border-radius:.75rem;background:#fff;padding:.8rem;color:#0f172a}button:disabled{opacity:.5}</style>

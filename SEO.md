@@ -26,7 +26,7 @@ Old Railway public HTML URLs redirect 301 to matching printpro3d.lk paths/querie
 - `server/origins.ts` and the checkout/account/analytics middleware: exact custom-domain compatibility with existing variables.
 - `src/pages/ProductsPage.vue`: crawlable category links, published products and nonvisual homepage heading.
 - `src/pages/ProductDetailsPage.vue`: shared existing descriptions, visible products and eager primary image.
-- `src/components/ProductImage.vue`, `src/components/ProductCard.vue`: eager/high-priority images for the first catalog row; other product images stay lazy/async. Fixed-ratio image wells preserve layout.
+- `src/components/ProductImage.vue`, `src/components/StoreDepartments.vue`: eager/high-priority lead images; other product images stay lazy/async. Existing image containers preserve layout.
 - `Dockerfile`, `package.json`, `package-lock.json`, `vite.config.ts`, ignore files: reproducible Railway build and shared runtime SEO module.
 - `server/seo.test.mjs`: HTTP/schema/discovery/privacy/redirect regression tests.
 

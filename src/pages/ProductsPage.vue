@@ -1,49 +1,50 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { CubeTransparentIcon, MagnifyingGlassIcon, TruckIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { trackSearch } from '../lib/ga4'
+import { onBeforeUnmount } from 'vue'
+import { useBuyNow } from '../composables/useBuyNow'
+const { buyNow } = useBuyNow()
+import { useRouter } from 'vue-router'
+const purchaseRouter = useRouter()
+import { computed, ref, watch } from 'vue'
+import StoreDepartments from '../components/StoreDepartments.vue'
+defineProps<{ showHighlights?: boolean }>()
+import { HeartIcon, MagnifyingGlassIcon, ScaleIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import productsData from '../data/products.json'
 import { publicProducts } from '../lib/seo'
-import { trackSearch } from '../lib/ga4'
-import { categoryGroups, categoryName } from '../data/categories'
-import ProductCard from '../components/ProductCard.vue'
-
-defineProps<{ showHighlights?: boolean }>()
+import { stockLabel } from '../data/catalog'
+import ProductImage from '../components/ProductImage.vue'
+import { useWishlistStore } from '../stores/wishlistStore'
+import { useCartStore } from '../stores/cartStore'
+import { useToast } from 'vue-toastification'
+import { useRoute } from 'vue-router'
+import { useCompareStore } from '../stores/compareStore'
 
 type Product = typeof productsData[number]
 const products = ref<Product[]>(publicProducts(productsData))
-const route = useRoute()
-const router = useRouter()
 const search = ref('')
-const selectedCategory = computed(() => typeof route.query.category === 'string' ? route.query.category : 'all')
-watch(() => route.query.q, q => { search.value = typeof q === 'string' ? q : '' }, { immediate: true })
-let searchTimer: ReturnType<typeof setTimeout> | undefined
-function recordSearch() { clearTimeout(searchTimer); searchTimer = setTimeout(() => trackSearch(search.value), 500) }
-onBeforeUnmount(() => clearTimeout(searchTimer))
+const route = useRoute()
+const selectedCategory = ref(typeof route.query.category === 'string' ? route.query.category : 'all')
+watch(() => route.query, query => {
+  search.value = typeof query.q === 'string' ? query.q : ''
+  selectedCategory.value = typeof query.category === 'string' ? query.category : 'all'
+}, { immediate: true })
+let searchTimer:ReturnType<typeof setTimeout> | undefined
+function recordSearch() {clearTimeout(searchTimer);searchTimer=setTimeout(()=>trackSearch(search.value),500)}
+onBeforeUnmount(()=>clearTimeout(searchTimer))
 const sortBy = ref('featured')
+const categoryLabels: Record<string, string> = { all: 'All products', 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'drone-spare-parts': 'Drone spare parts', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
+const categoryLabel = (category: string) => categoryLabels[category] || category.replace(/-/g, ' ')
 
-// Older short labels stay searchable alongside the navigation names.
-const searchLabels: Record<string, string> = { 'development-boards': 'Development boards', sensors: 'Sensors', displays: 'Displays', robotics: 'Robotics & kits', filament: '3D filament', drones: 'Camera drones', 'drone-spare-parts': 'Drone spare parts', 'rc-cars': 'RC cars & trucks', 'display-racks': 'Display racks', '3d-printed-models': '3D printed models' }
-
-const counts = computed(() => products.value.reduce<Record<string, number>>((total, product) => {
-  total[product.category] = (total[product.category] || 0) + 1
-  return total
-}, {}))
-const navGroups = computed(() => {
-  const present = new Set(products.value.map(product => product.category))
-  const grouped = categoryGroups.map(group => ({ label: group.label, ids: group.ids.filter(id => present.has(id)) })).filter(group => group.ids.length)
-  const known = new Set(categoryGroups.flatMap(group => group.ids))
-  const other = [...present].filter(id => !known.has(id))
-  return other.length ? [...grouped, { label: 'More', ids: other }] : grouped
-})
-const categoryLink = (id: string) => id === 'all' ? '/products' : { path: '/products', query: { category: id } }
-// The homepage previews the full catalog, so only the catalog page marks a category link as current.
-const isCurrent = (id: string) => route.path === '/products' && selectedCategory.value === id
+const wishlist = useWishlistStore()
+const cart = useCartStore()
+const toast = useToast()
+const compare = useCompareStore()
+const categories = computed(() => ['all', ...new Set(products.value.map(product => product.category))])
 
 const filteredProducts = computed(() => {
   const term = search.value.trim().toLowerCase()
   const result = products.value.filter(product =>
-    `${product.title} ${product.sku} ${product.description || ''} ${searchLabels[product.category] || ''} ${categoryName(product.category)}`.toLowerCase().includes(term) &&
+    `${product.title} ${product.sku} ${product.description || ''} ${categoryLabel(product.category)}`.toLowerCase().includes(term) &&
     (selectedCategory.value === 'all' || product.category === selectedCategory.value)
   )
   if (sortBy.value === 'priceLow') return [...result].sort((a, b) => a.price - b.price)
@@ -51,106 +52,73 @@ const filteredProducts = computed(() => {
   if (sortBy.value === 'name') return [...result].sort((a, b) => a.title.localeCompare(b.title))
   return result
 })
-const heading = computed(() => categoryName(selectedCategory.value))
-const clearSearch = () => {
-  search.value = ''
-  if (route.query.q !== undefined) router.replace({ path: route.path, query: { ...route.query, q: undefined } })
+
+const toggleWishlist = (product: Product) => wishlist.isInWishlist(product.id)
+  ? wishlist.removeFromWishlist(product.id)
+  : wishlist.addToWishlist(product)
+
+const addToCart = (product: Product) => {
+  if (product.id === 8) return purchaseRouter.push(`/products/${product.id}#purchase`)
+  if (!cart.addToCart(product)) return toast.warning('Please check the available quantity.')
+  toast.success(`${product.title} added to cart`)
+}
+
+const toggleCompare = (product: Product) => {
+  if (!compare.has(product.id) && compare.items.length >= 3) return toast.warning('You can compare up to 3 products')
+  const added = compare.toggle(product)
+  toast.info(added ? `${product.title} added to compare` : `${product.title} removed from compare`)
 }
 </script>
 
 <template>
-  <div class="catalog-page">
-    <section v-if="showHighlights" class="home-intro container-store">
-      <h1 class="home-heading"><span class="eyebrow">PRINTPRO3D</span><span class="sr-only"> — </span><span class="display-title block">3D printing, electronics and RC products in Sri Lanka</span></h1>
-      <ul class="home-services" aria-label="Store services">
-        <li><TruckIcon aria-hidden="true" /><p><strong>Islandwide delivery</strong><span>COD Rs. 400 · Bank deposit: free</span></p></li>
-        <li><router-link to="/custom-print"><CubeTransparentIcon aria-hidden="true" /><p><strong>Custom 3D printing</strong><span>Upload an STL for a quote →</span></p></router-link></li>
-      </ul>
-    </section>
-    <header v-else class="container-store catalog-head">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><router-link to="/">Home</router-link></li><li><router-link to="/products" :aria-current="selectedCategory === 'all' ? 'page' : undefined">Products</router-link></li><li v-if="selectedCategory !== 'all'" aria-current="page"><span class="crumb-current">{{ heading }}</span></li></ol></nav>
-      <h1 class="page-title mt-2">{{ heading }}</h1>
-      <p class="lead mt-2 hidden max-w-2xl sm:block">Electronics, sensors, robotics kits, 3D printing filament, display racks and RC products. Prices in LKR with islandwide delivery.</p>
-    </header>
+  <div class="catalog-page min-h-screen bg-slate-50 px-5 py-6 text-slate-900 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      <h1 v-if="showHighlights" class="sr-only">PRINTPRO3D — 3D Printing, Electronics and RC Products in Sri Lanka</h1>
+      <div v-if="!showHighlights" class="max-w-3xl">
+        <p class="section-kicker">Discover • Build • Play</p>
+        <h1 class="section-title shop-title">Your next favourite find.</h1>
+        <p class="mt-2 hidden text-sm text-slate-600 sm:block">Shop electronics, sensors, 3D filament, drones and RC vehicles. Local support, islandwide delivery.</p>
+      </div>
 
-    <div class="container-store catalog-layout">
-      <nav class="catalog-nav" aria-label="Product categories">
-        <p class="catalog-nav-title eyebrow">Shop by category</p>
-        <ul class="catalog-nav-list">
-          <li><router-link :to="categoryLink('all')" class="chip catalog-link" :aria-current="isCurrent('all') ? 'page' : undefined">All products <span class="count">{{ products.length }}</span></router-link></li>
-          <li v-for="group in navGroups" :key="group.label" class="catalog-nav-group">
-            <span>{{ group.label }}</span>
-            <ul>
-              <li v-for="id in group.ids" :key="id"><router-link :to="categoryLink(id)" class="chip catalog-link" :aria-current="isCurrent(id) ? 'page' : undefined">{{ categoryName(id) }} <span class="count">{{ counts[id] }}</span></router-link></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
+      <StoreDepartments v-if="showHighlights" :selected="selectedCategory" @select="selectedCategory=$event" />
+      <div v-if="!showHighlights" class="mt-3 flex flex-wrap gap-x-6 gap-y-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-xs font-semibold text-blue-800"><span>Islandwide delivery</span><span class="hidden sm:inline">Cash on delivery available</span><span class="hidden sm:inline">Free delivery with bank deposit</span><router-link to="/custom-print" class="underline underline-offset-4">Custom 3D printing →</router-link></div>
+      <div class="catalog-controls mt-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-2 grid-cols-[1fr_auto]">
+        <p class="mobile-product-count self-center px-2 text-xs font-semibold text-slate-600 sm:hidden" role="status">{{ filteredProducts.length }} products</p>
+        <label class="hidden relative min-w-0 sm:block">
+          <MagnifyingGlassIcon class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
+          <input v-model="search" @input="recordSearch" aria-label="Search products" type="search" placeholder="Search products..." class="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-4 text-slate-900 outline-none transition placeholder:text-slate-600 focus:border-cyan-400/60" />
+        </label>
+        <select aria-label="Sort products" v-model="sortBy" class="h-11 rounded-2xl border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-900 outline-none focus:border-cyan-400/60">
+          <option value="featured">Featured</option><option value="priceLow">Price: Low to high</option><option value="priceHigh">Price: High to low</option><option value="name">Name: A–Z</option>
+        </select>
+      </div>
 
-      <section class="min-w-0" :aria-labelledby="showHighlights ? 'featured-heading' : undefined" :aria-label="showHighlights ? undefined : 'Products'">
-        <h2 v-if="showHighlights" id="featured-heading" class="section-heading mb-1">Featured products</h2>
-        <div class="catalog-toolbar">
-          <div class="min-w-0">
-            <p class="text-sm text-ink-2" role="status" aria-live="polite">
-              <strong class="font-bold text-ink">{{ filteredProducts.length }}</strong> {{ filteredProducts.length === 1 ? 'product' : 'products' }}<template v-if="search.trim()"> for “{{ search.trim() }}”</template>
-              <button v-if="search.trim()" type="button" class="ml-1 inline-flex min-h-8 items-center gap-1 rounded-full px-2 font-semibold text-accent hover:bg-accent-soft" @click="clearSearch"><XMarkIcon class="h-4 w-4" aria-hidden="true" />Clear search</button>
-            </p>
-          </div>
-          <div class="flex min-w-0 flex-1 items-center justify-end gap-2">
-            <label class="relative hidden min-w-0 max-w-64 flex-1 sm:block">
-              <span class="sr-only">Search products</span>
-              <MagnifyingGlassIcon class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-3" aria-hidden="true" />
-              <input v-model="search" @input="recordSearch" type="search" placeholder="Filter products" class="field field-sm rounded-full pl-10" />
-            </label>
-            <select v-model="sortBy" aria-label="Sort products" class="field field-sm w-auto shrink-0 rounded-full font-semibold">
-              <option value="featured">Featured</option><option value="priceLow">Price: Low to high</option><option value="priceHigh">Price: High to low</option><option value="name">Name: A–Z</option>
-            </select>
-          </div>
-        </div>
+      <div class="category-navigation mt-4 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Product categories">
+        <router-link v-for="category in categories" :to="category === 'all' ? '/products' : { path: '/products', query: { category } }" :key="category" @click="selectedCategory = category" :aria-pressed="selectedCategory === category" :class="['shrink-0 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-bold capitalize transition', selectedCategory === category ? 'bg-blue-100 text-slate-950' : 'border border-slate-200 bg-slate-100 text-slate-600 hover:border-slate-300 hover:text-slate-900']">{{ categoryLabel(category) }}</router-link>
+      </div>
 
-        <div v-if="filteredProducts.length" class="product-grid mt-4">
-          <ProductCard v-for="(product, index) in filteredProducts" :key="product.id" :product="product" :eager="index < 4" />
-        </div>
-        <div v-else class="mt-4 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
-          <p class="text-lg font-bold text-ink">No products found</p>
-          <p class="mt-2 text-ink-2">Try another search or category.</p>
-          <div class="mt-6 flex flex-wrap justify-center gap-2">
-            <button v-if="search.trim()" type="button" class="btn btn-secondary btn-sm" @click="clearSearch">Clear search</button>
-            <router-link to="/products" class="btn btn-primary btn-sm">View all products</router-link>
+      <p class="mt-2 hidden text-xs text-slate-500 sm:block" role="status" aria-live="polite">{{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'product' : 'products' }}</p>
+      <div class="catalog-grid mt-4 grid gap-3 md:gap-5">
+        <article v-for="product in filteredProducts" :key="product.id" class="product-card flex min-w-0 flex-col group overflow-hidden rounded-2xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-cyan-400/30">
+          <router-link :to="`/products/${product.id}`" class="product-photo relative block aspect-square overflow-hidden bg-white">
+            <ProductImage :src="product.thumbnail" :alt="product.title" class="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105" />
+            <span class="product-badge absolute left-4 top-4 rounded-full bg-blue-100 px-3 py-1.5 text-xs font-black text-slate-950">{{ product.badge }}</span>
+          </router-link>
+          <div class="product-info flex flex-1 flex-col p-3 sm:p-5">
+            <div class="flex flex-col gap-3">
+              <div><h2 class="product-title min-h-12 text-sm font-bold text-slate-900 sm:text-base">{{ product.title }}</h2><p class="mt-2 break-all text-[10px] font-medium text-slate-500">SKU: {{ product.sku }}</p><p class="mt-2 text-lg font-black text-blue-700 sm:text-xl">Rs. {{ product.price.toLocaleString() }}</p><p class="mt-1 text-xs font-semibold text-emerald-700">{{ stockLabel(product.stock) }}</p></div>
+              <div class="product-secondary-actions flex gap-2"><button @click="toggleCompare(product)" :aria-label="`Compare ${product.title}`" :class="['grid h-10 w-10 shrink-0 place-items-center rounded-full border transition', compare.has(product.id) ? 'border-cyan-400 bg-blue-100 text-slate-950' : 'border-slate-200 text-slate-600 hover:border-cyan-400 hover:text-blue-600']"><ScaleIcon class="h-5 w-5" /></button><button @click="toggleWishlist(product)" :aria-label="`Wishlist ${product.title}`" :class="['grid h-10 w-10 shrink-0 place-items-center rounded-full border transition', wishlist.isInWishlist(product.id) ? 'border-rose-500 bg-rose-500 text-slate-900' : 'border-slate-200 text-slate-600 hover:border-rose-400 hover:text-rose-600']"><HeartIcon class="h-5 w-5" /></button></div>
+            </div>
+            <button :disabled="product.stock === 0" @click="buyNow(product)" class="buy-now-button mt-4 rounded-full bg-orange-500 px-2 py-3 text-xs font-bold text-white hover:bg-orange-600">Buy it now</button>
+            <div class="product-purchase-actions mt-auto grid grid-cols-[1fr_auto] gap-2 pt-4">
+              <router-link :to="`/products/${product.id}`" class="rounded-full border border-slate-200 px-2 py-3 text-center text-xs font-black text-slate-900 transition hover:border-cyan-400 hover:text-blue-600">View details</router-link>
+              <button :disabled="product.stock === 0" @click="addToCart(product)" class="grid h-12 w-12 place-items-center rounded-full bg-blue-100 text-slate-950 transition hover:bg-blue-200" :aria-label="`Add ${product.title} to cart`"><ShoppingBagIcon class="h-5 w-5" /></button>
+            </div>
           </div>
-        </div>
-      </section>
+        </article>
+      </div>
+
+      <div v-if="!filteredProducts.length" class="mt-12 rounded-3xl border border-dashed border-slate-200 py-20 text-center"><p class="text-xl font-bold">No products found</p><p class="mt-2 text-slate-500">Try another search or category.</p></div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.catalog-page { padding-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem); }
-.catalog-head { padding-block: clamp(1rem, 0.6rem + 1.6vw, 2.25rem) clamp(0.75rem, 0.5rem + 1vw, 1.5rem); }
-.catalog-layout { padding-top: 0.25rem; }
-.home-intro { display: grid; gap: 1rem; padding-block: clamp(1rem, 0.6rem + 1.8vw, 2.5rem) clamp(1rem, 0.6rem + 1.4vw, 2rem); }
-.home-heading { display: grid; gap: 0.375rem; max-width: 40rem; }
-.home-services { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
-.home-services li { display: flex; min-width: 0; gap: 0.625rem; align-items: flex-start; padding: 0.75rem; border: 1px solid var(--pp-line); border-radius: var(--pp-radius-sm); background: var(--pp-surface); }
-.home-services li:has(> a) { padding: 0; }
-.home-services a { display: flex; flex: 1; min-width: 0; gap: 0.625rem; align-items: flex-start; padding: 0.75rem; border-radius: inherit; transition: background-color 0.18s; }
-.home-services a:hover { background: var(--pp-surface-2); }
-.home-services svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; color: var(--pp-accent); }
-.home-services p { display: grid; gap: 0.125rem; min-width: 0; font-size: 0.75rem; line-height: 1.35; color: var(--pp-ink-2); }
-.home-services strong { color: var(--pp-ink); font-size: 0.8125rem; font-weight: 750; }
-@media (max-width: 639px) {
-  .home-intro { gap: 0.75rem; }
-  .home-services svg { display: none; }
-  .home-services li, .home-services a { padding: 0.625rem 0.75rem; }
-  .home-services p { font-size: 0.71875rem; }
-  .home-services strong { font-size: 0.78125rem; }
-}
-@media (min-width: 640px) {
-  .home-services { grid-template-columns: repeat(2, minmax(0, 18rem)); }
-  .home-services li, .home-services a { padding: 0.875rem 1rem; }
-}
-@media (min-width: 1024px) {
-  .home-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 2rem; }
-  .home-services { grid-template-columns: repeat(2, minmax(13rem, 17rem)); }
-}
-</style>

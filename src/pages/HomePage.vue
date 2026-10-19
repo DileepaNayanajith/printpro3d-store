@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ArrowRightIcon, ChatBubbleLeftRightIcon, CheckBadgeIcon, ChevronDownIcon, CubeTransparentIcon, TruckIcon } from '@heroicons/vue/24/outline'
+import { ArrowRightIcon, CheckBadgeIcon, ChevronDownIcon, CubeTransparentIcon, TruckIcon } from '@heroicons/vue/24/outline'
 
 import ProductsPage from './ProductsPage.vue'
+
 
 const activeFaq = ref<number | null>(0)
 const faqs = [
@@ -22,51 +23,46 @@ const benefits = [
 </script>
 
 <template>
-  <div>
+  <div class="bg-slate-50 text-slate-900">
     <ProductsPage show-highlights />
+    <section id="why-us" class="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+      <div class="max-w-2xl" data-aos="fade-up">
+        <p class="section-kicker">The PRINTPRO3D difference</p>
+        <h2 class="section-title">Everything your next build deserves.</h2>
+        <p class="mt-5 text-lg leading-8 text-slate-600">The right products and support, from your first idea to the finished build.</p>
+      </div>
+      <div class="mt-12 grid gap-5 md:grid-cols-3">
+        <article v-for="(benefit, index) in benefits" :key="benefit.title" class="glass-card" data-aos="fade-up" :data-aos-delay="index * 100">
+          <component :is="benefit.icon" class="h-8 w-8 text-blue-600" />
+          <h3 class="mt-8 text-xl font-bold">{{ benefit.title }}</h3>
+          <p class="mt-3 leading-7 text-slate-600">{{ benefit.text }}</p>
+        </article>
+      </div>
+    </section>
 
-    <section id="why-us" class="border-t border-line bg-surface">
-      <div class="container-store py-[clamp(2.5rem,2rem+3vw,4.5rem)]">
-        <div class="max-w-2xl">
-          <p class="eyebrow">The PRINTPRO3D difference</p>
-          <h2 class="section-heading mt-2">Everything your next build deserves.</h2>
-          <p class="lead mt-3">The right products and support, from your first idea to the finished build.</p>
+    <section class="border-y border-slate-200 bg-slate-100 py-24">
+      <div class="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <div data-aos="fade-up">
+          <p class="section-kicker">Need to know</p>
+          <h2 class="section-title">Questions, answered.</h2>
+          <p class="mt-5 max-w-md text-lg leading-8 text-slate-600">Everything you need for a confident order. Still unsure? Our live chat is always one click away.</p>
+          <button class="secondary-button mt-8" @click="openLiveChat">Chat with us</button>
         </div>
-        <div class="mt-8 grid gap-px overflow-hidden rounded-[var(--pp-radius)] border border-line bg-line md:grid-cols-3">
-          <article v-for="benefit in benefits" :key="benefit.title" class="bg-surface p-5 sm:p-6">
-            <component :is="benefit.icon" class="h-6 w-6 text-accent" aria-hidden="true" />
-            <h3 class="mt-4 text-base font-bold text-ink">{{ benefit.title }}</h3>
-            <p class="mt-1.5 text-sm leading-6 text-ink-2">{{ benefit.text }}</p>
+        <div class="space-y-3" data-aos="fade-up">
+          <article v-for="(faq, index) in faqs" :key="faq.question" class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <button @click="activeFaq = activeFaq === index ? null : index" class="flex w-full items-center justify-between gap-5 p-5 text-left font-bold sm:p-6" :aria-expanded="activeFaq === index">
+              <span>{{ faq.question }}</span><ChevronDownIcon :class="['h-5 w-5 shrink-0 text-blue-600 transition-transform', activeFaq === index ? 'rotate-180' : '']" />
+            </button>
+            <div v-if="activeFaq === index" class="border-t border-slate-200 px-5 py-5 text-sm leading-7 text-slate-600 sm:px-6">{{ faq.answer }}</div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="border-t border-line">
-      <div class="container-store grid gap-8 py-[clamp(2.5rem,2rem+3vw,4.5rem)] lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
-        <div>
-          <p class="eyebrow">Need to know</p>
-          <h2 class="section-heading mt-2">Questions, answered.</h2>
-          <p class="lead mt-3 max-w-md">Everything you need for a confident order. Still unsure? Our live chat is always one click away.</p>
-          <button type="button" class="btn btn-secondary mt-6" @click="openLiveChat"><ChatBubbleLeftRightIcon aria-hidden="true" /> Chat with us</button>
-        </div>
-        <div class="divide-y divide-line border-y border-line">
-          <article v-for="(faq, index) in faqs" :key="faq.question">
-            <h3>
-              <button type="button" :id="`faq-q-${index}`" @click="activeFaq = activeFaq === index ? null : index" class="flex min-h-14 w-full items-center justify-between gap-5 py-4 text-left text-[0.9375rem] font-bold text-ink" :aria-expanded="activeFaq === index" :aria-controls="`faq-a-${index}`">
-                <span>{{ faq.question }}</span><ChevronDownIcon :class="['h-5 w-5 shrink-0 text-ink-3 transition-transform duration-300', activeFaq === index ? 'rotate-180' : '']" aria-hidden="true" />
-              </button>
-            </h3>
-            <transition name="fade"><div v-if="activeFaq === index" :id="`faq-a-${index}`" role="region" :aria-labelledby="`faq-q-${index}`" class="pb-5 pr-10 text-sm leading-7 text-ink-2">{{ faq.answer }}</div></transition>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="container-store pb-[clamp(2.5rem,2rem+3vw,4.5rem)]">
-      <div class="flex flex-col items-start justify-between gap-5 rounded-[var(--pp-radius)] bg-accent-soft px-6 py-8 sm:px-10 md:flex-row md:items-center">
-        <div><p class="eyebrow !text-[var(--pp-on-accent-soft)]">Ready to build?</p><h2 class="mt-2 text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-extrabold tracking-tight text-[var(--pp-on-accent-soft)]">Discover your next favourite product.</h2></div>
-        <router-link to="/products" class="btn btn-primary shrink-0">Shop now <ArrowRightIcon aria-hidden="true" /></router-link>
+    <section class="px-5 pb-24 sm:px-8">
+      <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-blue-100 px-7 py-12 text-slate-950 sm:px-12 md:flex-row md:items-center">
+        <div><p class="text-sm font-black uppercase tracking-[0.2em]">Ready to build?</p><h2 class="mt-3 text-3xl font-black sm:text-4xl">Discover your next favourite product.</h2></div>
+        <router-link to="/products" class="inline-flex shrink-0 items-center gap-2 rounded-full bg-slate-50 px-6 py-3.5 font-bold text-slate-900">Shop now <ArrowRightIcon class="h-5 w-5" /></router-link>
       </div>
     </section>
   </div>

@@ -68,18 +68,18 @@ const prepareQuote = () => {
 </script>
 
 <template>
-  <div class="px-[var(--pp-gutter)] py-[clamp(1.5rem,1rem+2.5vw,3.5rem)]">
+  <div class="min-h-screen bg-slate-50 px-5 py-16 text-slate-900 sm:px-8">
     <div class="mx-auto max-w-7xl">
       <div class="max-w-3xl"><p class="section-kicker">Made for you</p><h1 class="section-title">Custom STL Printing</h1><p class="mt-5 text-lg leading-8 text-slate-600">Upload your STL, inspect it in interactive 3D and choose your preferred print options. Your model stays in your browser for this preview.</p></div>
 
       <div class="mt-10 grid items-start gap-8 xl:grid-cols-[1.25fr_0.75fr]">
-        <section class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6">
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-4 sm:p-6">
           <div class="flex flex-wrap items-center justify-between gap-3 pb-4"><div><h2 class="font-black">Live 3D preview</h2><p class="mt-1 text-xs text-slate-500">Drag to rotate · Scroll to zoom · Right-drag to move</p></div><button v-if="file" @click="viewer?.resetView()" class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:border-cyan-400 hover:text-blue-600"><ArrowPathIcon class="h-4 w-4" /> Reset view</button></div>
-          <StlViewer ref="viewer" :file="file" :color="color" class="h-[min(55vh,560px)] min-h-[320px] sm:min-h-[440px]" @dimensions="dimensions = $event" @metrics="metrics = $event" />
+          <StlViewer ref="viewer" :file="file" :color="color" class="h-[55vh] min-h-[440px]" @dimensions="dimensions = $event" @metrics="metrics = $event" />
         </section>
 
         <div class="space-y-6">
-          <section class="rounded-2xl border border-slate-200 bg-white p-6">
+          <section class="rounded-[2rem] border border-slate-200 bg-white p-6">
             <h2 class="flex items-center gap-3 text-xl font-black"><CloudArrowUpIcon class="h-6 w-6 text-blue-600" /> Upload model</h2>
             <input ref="fileInput" type="file" accept=".stl,model/stl" class="hidden" @change="selectFile()" />
             <button @click="fileInput?.click()" @dragover.prevent="dragging = true" @dragleave="dragging = false" @drop.prevent="drop" :class="['mt-5 w-full rounded-2xl border-2 border-dashed p-7 text-center transition', dragging ? 'border-cyan-400 bg-blue-100/10' : 'border-slate-200 bg-white hover:border-cyan-400/50']">
@@ -88,25 +88,25 @@ const prepareQuote = () => {
             <div v-if="file" class="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] p-4"><div class="flex items-center gap-2 text-sm font-bold text-emerald-700"><CheckCircleIcon class="h-5 w-5" /> {{ file.name }}</div><p class="mt-1 text-xs text-slate-500">{{ fileSize }}</p><p v-if="dimensions" class="mt-2 text-xs text-slate-600">Size: {{ formatDimension(dimensions.x) }} × {{ formatDimension(dimensions.y) }} × {{ formatDimension(dimensions.z) }} model units</p></div>
           </section>
 
-          <section v-if="metrics" class="rounded-2xl border border-slate-200 bg-white p-6">
+          <section v-if="metrics" class="rounded-[2rem] border border-slate-200 bg-white p-6">
             <h2 class="text-xl font-black">Model analysis</h2>
             <p class="mt-2 text-xs text-slate-500">Calculated locally from the STL geometry</p>
             <div class="mt-5 grid grid-cols-2 gap-3">
-              <div class="rounded-xl bg-slate-100 p-4"><p class="text-xs font-bold text-slate-500">Volume</p><p class="mt-2 font-black text-blue-600">{{ (metrics.volume / 1000).toFixed(2) }} cm³</p></div>
-              <div class="rounded-xl bg-slate-100 p-4"><p class="text-xs font-bold text-slate-500">Surface area</p><p class="mt-2 font-black text-blue-600">{{ (metrics.surfaceArea / 100).toFixed(2) }} cm²</p></div>
-              <div class="rounded-xl bg-slate-100 p-4"><p class="text-xs font-bold text-slate-500">Triangles</p><p class="mt-2 font-black text-slate-900">{{ metrics.triangles.toLocaleString() }}</p></div>
-              <div class="rounded-xl bg-slate-100 p-4"><p class="text-xs font-bold text-slate-500">Est. material</p><p class="mt-2 font-black text-slate-900">~{{ estimatedWeight.toFixed(1) }} g</p></div>
+              <div class="rounded-2xl bg-white p-4"><p class="text-xs font-bold text-slate-500">Volume</p><p class="mt-2 font-black text-blue-600">{{ (metrics.volume / 1000).toFixed(2) }} cm³</p></div>
+              <div class="rounded-2xl bg-white p-4"><p class="text-xs font-bold text-slate-500">Surface area</p><p class="mt-2 font-black text-blue-600">{{ (metrics.surfaceArea / 100).toFixed(2) }} cm²</p></div>
+              <div class="rounded-2xl bg-white p-4"><p class="text-xs font-bold text-slate-500">Triangles</p><p class="mt-2 font-black text-slate-900">{{ metrics.triangles.toLocaleString() }}</p></div>
+              <div class="rounded-2xl bg-white p-4"><p class="text-xs font-bold text-slate-500">Est. material</p><p class="mt-2 font-black text-slate-900">~{{ estimatedWeight.toFixed(1) }} g</p></div>
             </div>
             <p class="mt-4 text-xs leading-5 text-slate-500">Material weight is a rough estimate based on model volume, selected material, infill and quantity. Slicer settings, walls and supports affect the final result.</p>
           </section>
 
-          <section class="rounded-2xl border border-slate-200 bg-white p-6">
+          <section class="rounded-[2rem] border border-slate-200 bg-white p-6">
             <h2 class="flex items-center gap-3 text-xl font-black"><CubeTransparentIcon class="h-6 w-6 text-blue-600" /> Print options</h2>
             <div class="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-1">
               <label class="option-label">Material<select v-model="material" class="option-field"><option>PLA</option><option>PETG</option><option>ABS</option><option>TPU</option></select></label>
               <label class="option-label">Infill<select v-model="infill" class="option-field"><option>10%</option><option>20%</option><option>40%</option><option>60%</option><option>100%</option></select></label>
               <label class="option-label">Quantity<input v-model.number="quantity" type="number" min="1" max="100" class="option-field" /></label>
-              <div class="option-label">Colour<div class="mt-1 flex flex-wrap gap-2"><button v-for="option in colors" :key="option" @click="color = option" :style="{ backgroundColor: option }" :class="['h-10 w-10 rounded-full border-2 transition', color === option ? 'scale-110 border-blue-600 ring-2 ring-blue-600/30' : 'border-slate-300']" :aria-label="`Select colour ${option}`"></button></div></div>
+              <div class="option-label">Colour<div class="mt-1 flex flex-wrap gap-2"><button v-for="option in colors" :key="option" @click="color = option" :style="{ backgroundColor: option }" :class="['h-9 w-9 rounded-full border-2 transition', color === option ? 'scale-110 border-cyan-400 ring-2 ring-cyan-400/30' : 'border-slate-300']" :aria-label="`Select colour ${option}`"></button></div></div>
             </div>
             <button @click="prepareQuote" class="primary-button mt-7 w-full">Request quote on WhatsApp</button>
             <p class="mt-3 text-center text-xs leading-5 text-slate-500">Your print details will be prepared for WhatsApp. Attach the STL file in the chat, review the message and tap Send.</p>
@@ -117,3 +117,6 @@ const prepareQuote = () => {
   </div>
 </template>
 
+<style scoped>
+.option-label{display:flex;flex-direction:column;gap:.55rem;color:#cbd5e1;font-size:.8rem;font-weight:700}.option-field{width:100%;border:1px solid rgba(255,255,255,.1);border-radius:1rem;background:#0f172a;padding:.8rem 1rem;color:white;outline:none}.option-field:focus{border-color:#22d3ee}
+</style>

@@ -15,12 +15,12 @@ const sections = [
 </script>
 
 <template>
-  <div class="px-[var(--pp-gutter)] py-[clamp(1.5rem,1rem+2.5vw,3.5rem)]">
+  <div class="min-h-screen bg-slate-50 px-5 py-16 text-slate-900 sm:px-8">
     <div class="mx-auto max-w-4xl">
       <p class="section-kicker">Store information</p><h1 class="section-title">Terms & Conditions</h1><p class="mt-4 text-sm text-slate-500">Last updated: {{ updated }}</p>
-      <div class="mt-10 rounded-2xl border border-blue-100 bg-blue-100/10 p-6 text-sm leading-7 text-slate-600">This page explains how orders, payment, delivery and customer support work at PRINTPRO3D. Please read it before placing an order.</div>
+      <div class="mt-10 rounded-3xl border border-cyan-400/20 bg-blue-100/10 p-6 text-sm leading-7 text-cyan-100">This page explains how orders, payment, delivery and customer support work at PRINTPRO3D. Please read it before placing an order.</div>
       <div class="mt-8 space-y-4">
-        <section v-for="section in sections" :key="section.title" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 class="text-xl font-black">{{ section.title }}</h2><p class="mt-3 leading-7 text-slate-600">{{ section.text }}</p></section>
+        <section v-for="section in sections" :key="section.title" class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8"><h2 class="text-xl font-black">{{ section.title }}</h2><p class="mt-3 leading-7 text-slate-600">{{ section.text }}</p></section>
       </div>
       <div class="mt-10 flex flex-wrap gap-3"><router-link to="/warranty" class="primary-button">View warranty policy</router-link><router-link to="/products" class="secondary-button">Back to products</router-link></div>
     </div>
