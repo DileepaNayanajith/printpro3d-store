@@ -1,7 +1,7 @@
 <template>
-  <article class="mx-auto max-w-3xl px-5 py-12 text-slate-900">
+  <article class="mx-auto max-w-3xl px-[var(--pp-gutter)] py-[clamp(1.5rem,1rem+2.5vw,3.5rem)] text-slate-900">
     <h1 class="section-title">Privacy & cookie policy</h1>
-    <p class="mt-4">Updated 15 October 2026</p>
+    <p class="mt-3 text-sm text-slate-500">Updated 15 October 2026</p>
     <h2 class="mt-8 text-xl font-bold">Shopping and orders</h2>
     <p class="mt-3 leading-7">PRINTPRO3D uses the details you submit to handle enquiries, accounts, delivery and orders. Shopping cart, theme, sign-in and order-request storage support these services. WhatsApp interactions are handled by WhatsApp when you choose to open it.</p>
     <h2 class="mt-8 text-xl font-bold">Optional analytics</h2>
