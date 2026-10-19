@@ -28,7 +28,7 @@ onUnmounted(()=>clearInterval(timer))
       <button @click="select('all')" :aria-pressed="selected==='all'" class="flex w-full items-center justify-between px-4 py-2.5 text-left text-xs font-bold text-blue-600">All products <span>{{ catalog.length }}</span></button>
       <button v-for="category in departments" :key="category.id" @click="select(category.id)" :aria-pressed="selected===category.id" :class="['flex w-full items-center gap-2 border-t border-slate-200 px-4 py-2.5 text-left text-xs transition hover:bg-slate-100',selected===category.id?'bg-blue-50 font-bold text-blue-600':'text-slate-600']"><span class="flex-1">{{ category.label }}</span><span class="text-[10px] text-slate-500">{{ count(category.id) }}</span><ChevronRightIcon class="h-3 w-3" /></button>
     </aside>
-    <div class="min-w-0">
+    <div class="department-feature min-w-0">
       <div class="department-mobile-actions mb-3 grid grid-cols-2 gap-2 sm:block lg:hidden">
       <button @click="drawer?.showModal()" class="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-900 lg:hidden" aria-haspopup="dialog"><span class="flex items-center gap-2"><Squares2X2Icon class="h-5 w-5 text-blue-600" /> Shop by category</span><ChevronRightIcon class="h-4 w-4" /></button>
       <button @click="collectionsOpen=!collectionsOpen" :aria-expanded="collectionsOpen" aria-controls="featured-collections" class="flex min-h-11 items-center justify-between rounded-xl border border-blue-100 bg-blue-50 px-3 py-3 text-sm font-bold text-blue-700 sm:hidden">Collections <ChevronRightIcon :class="['h-4 w-4 transition-transform',{'rotate-90':collectionsOpen}]" /></button>
@@ -57,7 +57,7 @@ onUnmounted(()=>clearInterval(timer))
 .department-layout{display:grid;gap:12px}
 .department-drawer{position:fixed;inset:0 auto 0 0;margin:0;max-height:100dvh;height:100dvh;width:min(320px,90vw);max-width:90vw;overflow-y:auto}
 .department-drawer::backdrop{background:#02061788;backdrop-filter:blur(3px)}
-@media(min-width:1024px){.department-layout{grid-template-columns:220px minmax(0,1fr)}.department-layout>div:last-of-type{grid-column:2}}
+@media(min-width:1024px){.department-feature{display:flex;flex-direction:column}.promo-banner{display:flex;flex:1;flex-direction:column;justify-content:center}.promo-banner>div:first-child{flex:1}.department-layout{grid-template-columns:220px minmax(0,1fr)}.department-layout>div:last-of-type{grid-column:2}}
 @media(min-width:1280px){.department-layout{grid-template-columns:220px minmax(0,1fr) 200px}.department-layout>div:last-of-type{grid-column:auto}}
 @media(max-width:639px){
 .department-layout{margin-top:0;gap:8px}
