@@ -5,9 +5,9 @@ This change is a browser integration, disabled unless VITE_META_PIXEL_ID is set 
 ## Proposed configuration
 
 - Website: https://printpro3d.lk
-- Existing website pixel to verify and connect: 1020017270659994 (PrintPro3D's pixel).
+- Created and selected in the rack draft: 1770603234189018 (PRINTPRO3D Website | printpro3d.lk), under ad account 1093902011166579.
 - Ad account: 1093902011166579.
-- Set VITE_META_PIXEL_ID=1020017270659994 in the storefront build environment only after verifying account access. Pixel IDs are public; never put a Conversions API token in VITE_*.
+- Set VITE_META_PIXEL_ID=1770603234189018 in the storefront build environment for production deployment. Pixel IDs are public; never put a Conversions API token in VITE_*.
 - Rebuild/redeploy after changing this variable.
 
 ## Events and consent
