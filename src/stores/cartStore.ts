@@ -1,4 +1,5 @@
 import { trackCart } from '../lib/ga4'
+import { metaCart } from '../lib/meta-pixel'
 import { defineStore } from 'pinia'
 import catalog from '../data/products.json'
 import { unitPrice } from '../lib/pricing'
@@ -28,7 +29,7 @@ export const useCartStore = defineStore('cart', {
       const existing=this.items.find(p=>p.id===product.id && p.color===color)
       if(existing)existing.quantity+=quantity
       else this.items.push({...product,thumbnail:product.colorImages?.[color as 'White'|'Black'|'Gray'] || product.thumbnail,color,quantity})
-      this.reprice();this.saveCart();if(!silent)trackCart('add_to_cart',[{id:product.id,price:this.items.find(p=>p.id===product.id && p.color===color)!.price,color,quantity}]);return true
+      this.reprice();this.saveCart();if(!silent){metaCart('add_to_cart',[{id:product.id,price:this.items.find(p=>p.id===product.id && p.color===color)!.price,color,quantity}]);trackCart('add_to_cart',[{id:product.id,price:this.items.find(p=>p.id===product.id && p.color===color)!.price,color,quantity}]);}return true
     },
     increaseQuantity(id:number,color='') { return this.addToCart({id,color}) },
     decreaseQuantity(id:number,color='') {

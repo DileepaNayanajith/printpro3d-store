@@ -148,3 +148,29 @@ test('drone spares keep stated unit prices and enforce battery stock limits',asy
  assert.match(received[0].body.product,/S119 Drone Battery/)
  assert.match(received[0].body.product,/S119 Drone Motor with ESC/)
 })
+
+test('Meta attribution requires consent and uses authoritative rack totals without contact details',async t=>{
+ const {post,received}=await fixture(t)
+ const rack={...order,items:[{id:8,color:'Black',quantity:3}],expected_total_cents:565000}
+ const supplied={consent:true,fbp:'fb.1.1780000000000.123456789',contents:[{id:'fake',quantity:3,item_price:1}],shipping:0,email:'private@example.test',phone:'0770000000'}
+ assert.equal((await post({...rack,meta_attribution:supplied})).status,201)
+ const clean=received.at(-1).body.meta_attribution
+ assert.equal(clean.shipping,400)
+ assert.deepEqual(clean.contents,[{id:'P3D-HW-RACK-10',quantity:3,item_price:1750}])
+ assert.equal(clean.email,undefined);assert.equal(clean.phone,undefined)
+ assert.equal((await post({...rack,meta_attribution:{...supplied,consent:false}})).status,201)
+ assert.equal(received.at(-1).body.meta_attribution,undefined)
+ assert.equal((await post({...rack,meta_attribution:{...supplied,fbp:'bad-cookie'}})).status,201)
+ assert.equal(received.at(-1).body.meta_attribution,undefined)
+})
+test('Meta withdrawal is same-origin, validates keys and uses private server bridge',async t=>{
+ const {post,received}=await fixture(t)
+ const body={request_ids:[order.request_id]}
+ assert.equal((await post(body,'https://attacker.test','/api/meta/withdraw')).status,403)
+ assert.equal((await post({request_ids:['short']},'https://store.test','/api/meta/withdraw')).status,400)
+ assert.equal(received.length,0)
+ assert.equal((await post(body,'https://store.test','/api/meta/withdraw')).status,200)
+ assert.equal(received[0].path,'/api/website/meta/withdraw')
+ assert.deepEqual(received[0].body,body)
+ assert.equal(received[0].headers.authorization,'Bearer test-only-key')
+})
