@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { trackShipping, recordOrder } from '../lib/ga4'
-import { metaOrderSubmitted } from '../lib/meta-pixel'
+import { metaAttribution, metaOrderSubmitted } from '../lib/meta-pixel'
 import { productSku } from '../data/catalog'
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -30,12 +30,12 @@ const placeOrder = async () => {
       pending = {fingerprint, key:crypto.randomUUID()}
       localStorage.setItem('oms-checkout-pending',JSON.stringify(pending))
     }
-    const response = await fetch('/api/checkout', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload,request_id:pending.key})})
+    const response = await fetch('/api/checkout', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload,request_id:pending.key,meta_attribution:metaAttribution(cart.items,deliveryFee.value)})})
     const result = await response.json()
     if (!response.ok || !result.reference) throw new Error(result.error || 'Could not save your order. Please try again.')
     sessionStorage.setItem('oms-order-receipt',JSON.stringify({...result,payment:details.payment,total:orderTotal.value}))
     recordOrder(result.reference,cart.items,deliveryFee.value,details.payment)
-    metaOrderSubmitted(result.reference,cart.items,deliveryFee.value)
+    metaOrderSubmitted(result.reference,cart.items,deliveryFee.value,pending.key)
     cart.clearCart()
     localStorage.removeItem('oms-checkout-pending')
     await router.push('/success')

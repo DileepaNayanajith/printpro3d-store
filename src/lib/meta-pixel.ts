@@ -2,13 +2,13 @@ import { nextTick, watch } from 'vue'
 import type { Router } from 'vue-router'
 import catalog from '../data/products.json'
 import { advertisingConsent, privacySignal } from './consent'
-import { ecommerce, safePage, confirmedOrder, type Line } from './ga4-core'
+import { ecommerce, safePage, type Line } from './ga4-core'
 
 type Pixel = { (...args: unknown[]): void; queue: unknown[][]; callMethod?: (...args: unknown[]) => void; loaded: boolean; version: string; push: Pixel }
 type MetaWindow = Window & { fbq?: Pixel; _fbq?: Pixel }
-export const META_PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID || ''
-let installed = false, active = false, initialized = false, lastPage = '', checking = false
-const ORDERS = 'pp3d-meta-orders', PURCHASES = 'pp3d-meta-purchases'
+export const META_PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID || '1770603234189018'
+let installed = false, active = false, initialized = false, lastPage = ''
+const ORDERS = 'pp3d-meta-orders'
 const browser = () => window as MetaWindow
 const allowedHost = () => ['printpro3d.lk', 'www.printpro3d.lk'].includes(location.hostname)
 // Pixel transmits its page URL: don't load or call it on private routes, arbitrary
@@ -36,43 +36,35 @@ export function metaCart(name: string, lines: Line[]) {
   const events: Record<string,string> = {add_to_cart:'AddToCart'}
   if (events[name]) metaEvent(events[name], productData(lines))
 }
-export function metaOrderSubmitted(reference: string, lines: Line[], shipping: number) {
+export function metaAttribution(lines: Line[], shipping: number) {
+  if (!permitted()) return undefined
+  const cookie = (name: string) => document.cookie.split(';').map(part => part.trim()).find(part => part.startsWith(name + '='))?.slice(name.length + 1)
+  const fbp = cookie('_fbp'), fbc = cookie('_fbc')
+  if (!fbp && !fbc) return undefined
+  return {consent:true, fbp, fbc, ...productData(lines), shipping}
+}
+function withdrawPending() {
+  try {
+    const pending = JSON.parse(localStorage.getItem(ORDERS) || '{}')
+    const request_ids = Object.values(pending).map(value => (value as {request_id?:string}).request_id).filter(Boolean)
+    if (request_ids.length) void fetch('/api/meta/withdraw', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({request_ids}), keepalive:true}).catch(()=>{})
+  } catch { /* Withdrawal of browser consent still proceeds. */ }
+}
+export function metaOrderSubmitted(reference: string, lines: Line[], shipping: number, request_id?: string) {
+  if (!advertisingConsent.value && request_id) {
+    void fetch('/api/meta/withdraw', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request_ids:[request_id]}),keepalive:true}).catch(()=>{})
+    return
+  }
   if (!permitted() || !/^WEB-\d+$/.test(reference)) return
   try {
     const pending = JSON.parse(localStorage.getItem(ORDERS) || '{}')
+    for (const key of Object.keys(pending)) if (!pending[key]?.created || Date.now() - pending[key].created > 30*86400000) delete pending[key]
     if (pending[reference]) return
-    pending[reference] = {...productData(lines), shipping, created:Date.now()}
+    pending[reference] = {...productData(lines), shipping, request_id, created:Date.now()}
     localStorage.setItem(ORDERS, JSON.stringify(pending))
     // A COD request or unpaid bank order is not yet a confirmed purchase.
     metaEvent('OrderSubmitted', productData(lines), `order-${reference}`, true)
   } catch { /* Tracking must never block an order. */ }
-}
-async function reconcileOrders() {
-  if (!permitted() || checking) return
-  checking = true
-  try {
-    const pending = JSON.parse(localStorage.getItem(ORDERS) || '{}')
-    for (const [key, value] of Object.entries(pending)) if (Date.now() - (value as {created:number}).created > 30*86400000) delete pending[key]
-    if (!Object.keys(pending).length) return
-    const response = await fetch('/api/account/orders', {credentials:'same-origin'})
-    if (!response.ok || !permitted()) return
-    const result = await response.json()
-    for (const order of result.orders || []) {
-      const saved = pending[order.reference]
-      if (!saved || !confirmedOrder(order) || Math.round((saved.value + saved.shipping)*100) !== order.total_cents) continue
-      const send = () => {
-        if (!permitted()) return
-        const sent = JSON.parse(localStorage.getItem(PURCHASES) || '[]')
-        if (!Array.isArray(sent) || sent.includes(order.order_reference)) return
-        localStorage.setItem(PURCHASES, JSON.stringify([...sent, order.order_reference]))
-        const {created: _created, shipping: _shipping, ...data} = saved
-        metaEvent('Purchase', data, `purchase-${order.order_reference}`)
-      }
-      if (navigator.locks) await navigator.locks.request('pp3d-meta-purchase', send); else send()
-      delete pending[order.reference]
-    }
-    if (advertisingConsent.value) localStorage.setItem(ORDERS, JSON.stringify(pending))
-  } catch { /* Optional tracking failure cannot affect shopping. */ } finally { checking = false }
 }
 function enable() {
   if (active || !advertisingConsent.value || privacySignal() || !allowedHost() || !/^\d{5,30}$/.test(META_PIXEL_ID) || !metaSafeLocation(location.href)) return
@@ -106,10 +98,11 @@ export function installMetaPixel(router: Router, cart: () => Line[]) {
       if (product) metaEvent('ViewContent', productData([{id:product.id, quantity:1, price:product.price}]))
       if (path === '/checkout' && cart().length) metaEvent('InitiateCheckout', productData(cart()))
     }
-    void reconcileOrders()
+
   }
   watch(advertisingConsent, accepted => {
     if (!accepted) {
+      withdrawPending()
       active = false; lastPage = ''
       const pixel = browser().fbq
       // If the network script has not loaded, discard queued events before revoking.
@@ -119,5 +112,5 @@ export function installMetaPixel(router: Router, cart: () => Line[]) {
     void page()
   }, {immediate:true, flush:'sync'})
   router.afterEach((_to,_from,failure) => { if (!failure) void page() })
-  setInterval(() => { if (!document.hidden) void reconcileOrders() }, 60000)
+  // Purchase is sent only by the persistent OMS outbox, never a return visit.
 }

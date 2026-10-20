@@ -1,34 +1,28 @@
-# Meta website tracking rollout
+# PRINTPRO3D Meta measurement
 
-This change is a browser integration, disabled unless VITE_META_PIXEL_ID is set at build time. It does not deploy, change Meta asset permissions or send server-side events.
+Website: https://printpro3d.lk. Pixel: 1770603234189018, created in ad account 1093902011166579. Public pixel ID defaults to this value and can be overridden by VITE_META_PIXEL_ID at build time. Never place an access token in a VITE variable.
 
-## Proposed configuration
+## Consent and browser events
 
-- Website: https://printpro3d.lk
-- Created and selected in the rack draft: 1770603234189018 (PRINTPRO3D Website | printpro3d.lk), under ad account 1093902011166579.
-- Ad account: 1093902011166579.
-- Set VITE_META_PIXEL_ID=1770603234189018 in the storefront build environment for production deployment. Pixel IDs are public; never put a Conversions API token in VITE_*.
-- Rebuild/redeploy after changing this variable.
+A separate advertising opt-in is required; existing analytics consent alone does not enable Meta. Reject, analytics-only and analytics + advertising choices are provided. Do Not Track and Global Privacy Control override advertising consent. Advanced matching is disabled in the code; names, email addresses, phone numbers and postal addresses are not sent to Meta.
 
-## Events and consent
+Public catalogue pages generate PageView, ViewContent, AddToCart and InitiateCheckout using catalogue SKUs and LKR prices. Private routes, fragments, arbitrary query strings and unsafe UTM values are excluded. Accepted checkout requests generate custom OrderSubmitted, never Purchase.
 
-Advertising measurement requires a new explicit opt-in; prior Google Analytics consent alone is insufficient. Reject, analytics-only, and analytics + advertising choices are available. Browser privacy signals override consent. Raw customer contact details and advanced matching are not implemented.
+## Confirmed purchases via OMS
 
-PageView, ViewContent, AddToCart and InitiateCheckout use catalogue fields with LKR values. OrderSubmitted is a custom event after the checkout API accepts the request. It is **not Purchase**.
+The storefront bridge sends opted-in _fbp/_fbc identifiers with server-calculated item prices and shipping to the authenticated OMS intake. The OMS stores this attribution for at most 30 days. No historical leads are backfilled.
 
-Purchase requires the existing authenticated OMS account response to confirm an eligible COD order or verified bank payment, matching the saved total. Purchase value excludes shipping. Stable event IDs and browser storage prevent duplicate reporting while advertising consent remains active. Private routes and unsafe query strings are excluded from pixel calls, so reconciliation waits for a return to a public page.
+Only the existing order qualification transaction queues Purchase: COD must have its confirmed total unchanged; bank orders require verified payment. Value excludes shipping. A persistent SQLite outbox uses a unique order ID, atomic leases, stable event ID/time, retries and expiry. Cancelled orders are suppressed before sending. Browser return visits are not required and never send Purchase, avoiding browser/server duplication.
 
-## Material limitation: not complete purchase optimization
+The private OMS variable META_CAPI_ACCESS_TOKEN enables delivery to Meta. It must be generated for the correct pixel and saved only in the server environment. With no token the worker sends nothing. Checkout/order processing remains functional if Meta is unavailable. The application sends only consented Meta identifiers, browser User-Agent, catalogue items, order value, an opaque event ID and a fixed public checkout URL.
 
-Browser reconciliation needs the same browser, advertising consent, an authenticated account and a return visit after confirmation. Guest orders and customers who never return will be missed. This is not sufficient as the sole reliable purchase signal for paid acquisition.
+Withdrawing advertising consent requests removal of this browser's pending attribution and unsent conversions while online. Previously transmitted events cannot be recalled by this mechanism. Browser pending request references expire after 30 days. Delivered-order profitability remains a separate OMS metric: a confirmed COD order can still be returned or refused.
 
-Complete the OMS-to-Meta Conversions API integration before claiming end-to-end tracking. It must use actual order confirmation/payment state, stable event IDs shared with the browser, consent-aware attribution retained from checkout, and a persistent outbox with retries. Do not classify form submissions or checkout clicks as purchases, and do not expose the CAPI access token to the browser. Delivered-order profitability remains a separate OMS metric.
+## Publication checklist
 
-## Acceptance before publishing ads
-
-1. Verify the pixel owner and connect it to the intended ad account in Meta.
-2. Deploy the reviewed website change with the public pixel ID configured.
-3. Use Meta Test Events to verify opt-in, no tracking after reject/withdrawal, page/product/cart/checkout events, correct LKR values, private-page exclusion and no duplicate events.
-4. Use an explicitly designated test order with OMS access to verify confirmation and cancellation handling. No real production order was placed in this task.
-5. Implement and test the server-side confirmation path for guests/non-returning customers.
-6. Select the verified dataset and Purchase event in the campaign. Obtain final approval for $5/day ongoing spend.
+- Deploy the OMS branch and storefront branch, preserving the existing OMS volume and checkout bridge credentials.
+- Generate and privately save the CAPI token. Current Meta UI reports that a business portfolio admin/developer is required; do not claim server tracking is live until this is resolved.
+- Confirm new events in Meta Test Events after advertising opt-in. Check reject/withdrawal, private page exclusion, product/cart/checkout LKR values and server event acceptance.
+- Automated tests cover actual qualification, unpaid bank orders, cancellation, consent, retry persistence, duplicate prevention, server-side prices and private bridge boundaries. No real production order was created for tests.
+- Verify the selected ad dataset/Purchase event, audience, authentic photo, destination URL and tracking parameters.
+- Obtain final approval for the selected campaign's $5 USD daily ongoing spend. Do not publish unrelated drafts.

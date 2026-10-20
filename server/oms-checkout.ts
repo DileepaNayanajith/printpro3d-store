@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url'
 // Runs only on the server. Never expose the OMS token in VITE_* variables.
 export function checkoutMiddleware(env: Record<string, string>): Connect.NextHandleFunction {
   const middleware: Connect.NextHandleFunction = async (req, res, next) => {
-    if (req.url?.split('?')[0] !== '/api/checkout') return next()
+    const path = req.url?.split('?')[0]
+    if (path !== '/api/checkout' && path !== '/api/meta/withdraw') return next()
     const reply = (status: number, data: unknown) => { res.statusCode = status; res.setHeader('Content-Type', 'application/json'); res.setHeader('Cache-Control','no-store'); res.end(JSON.stringify(data)) }
     if (req.method !== 'POST') return reply(405, {error:'Method not allowed'})
     if (!allowedOrigin(req,env)) return reply(403,{error:'Please order from the website checkout.'})
@@ -17,6 +18,13 @@ export function checkoutMiddleware(env: Record<string, string>): Connect.NextHan
     try {
       for await (const chunk of req) { body += chunk; if (Buffer.byteLength(body)>20000) return reply(413,{error:'Order is too large.'}) }
       const input = JSON.parse(body)
+      if (path === '/api/meta/withdraw') {
+        const keys = input?.request_ids
+        if (!Array.isArray(keys) || keys.length > 100 || keys.some(key => typeof key !== 'string' || !/^[A-Za-z0-9_-]{20,80}$/.test(key))) return reply(400,{error:'Invalid request.'})
+        const withdrawn = await fetch(new URL('/api/website/meta/withdraw',env.OMS_URL),{method:'POST',redirect:'error',signal:AbortSignal.timeout(5000),headers:{'Content-Type':'application/json',Authorization:`Bearer ${env.OMS_WEBSITE_TOKEN}`},body:JSON.stringify({request_ids:keys})})
+        if (!withdrawn.ok) return reply(503,{error:'Please retry withdrawal shortly.'})
+        return reply(200,{ok:true})
+      }
       if (!input || !Array.isArray(input.items) || !input.items.length || input.items.length>50 || !['cod','bank'].includes(input.payment)) return reply(400,{error:'Please check your order.'})
       const catalog = JSON.parse(readFileSync(fileURLToPath(new URL('../src/data/products.json',import.meta.url)), 'utf8'))
       const quantities = new Map<number,number>()
@@ -45,11 +53,24 @@ export function checkoutMiddleware(env: Record<string, string>): Connect.NextHan
       }
       const total=subtotal+(input.payment==='cod'?40000:0)
       if (input.expected_total_cents!==total) return reply(409,{error:'Prices have changed. Please refresh your cart before ordering.'})
+      // Catalogue data and totals, rather than browser-supplied prices, are forwarded.
+      let meta_attribution
+      if(input.meta_attribution?.consent === true) {
+        const cookies:Record<string,string> = {}
+        for(const key of ['fbp','fbc']) {
+          const value=input.meta_attribution[key]
+          if(typeof value==='string' && /^fb\.\d\.\d{10,16}\.[A-Za-z0-9_-]{1,500}$/.test(value))cookies[key]=value
+        }
+        if(Object.keys(cookies).length)meta_attribution={consent:true,...cookies,...(typeof req.headers['user-agent']==='string' && /^[\x20-\x7e]{1,512}$/.test(req.headers['user-agent'])?{client_user_agent:req.headers['user-agent']}:{}),shipping:input.payment==='cod'?400:0,contents:[...variants.values()].map(item=>{
+          const product=catalog.find((p:{id:number})=>p.id===item.id)
+          return {id:product.sku,quantity:item.quantity,item_price:unitPrice(product,quantities.get(item.id)!)}
+        })}
+      }
       const response=await fetch(new URL('/api/website/orders',env.OMS_URL),{
         method:'POST',redirect:'error',signal:AbortSignal.timeout(12000),
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${env.OMS_WEBSITE_TOKEN}`, 'X-Customer-Session':customerToken(req)},
         body:JSON.stringify({request_id:input.request_id,name:input.fullName,phone:input.phone,address:input.address,city:input.city,
-          product:descriptions.join('; '),quantity,total_cents:total,payment:input.payment,
+          product:descriptions.join('; '),quantity,total_cents:total,payment:input.payment,...(meta_attribution?{meta_attribution}:{}),
           notes:`District: ${String(input.district||'')}\nEmail: ${String(input.email||'')}\n${String(input.notes||'')}`})
       })
       const result=await response.json()

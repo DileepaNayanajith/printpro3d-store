@@ -8,17 +8,17 @@ const moduleUrl=(file,replacements={})=>{
  for(const [from,to]of Object.entries(replacements))source=source.replace(from,to)
  return 'data:text/javascript;base64,'+Buffer.from(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText).toString('base64')
 }
-test('Meta opt-in, safe URLs, ecommerce, confirmed purchases, dedupe and withdrawal',async()=>{
+test('Meta opt-in, safe URLs, ecommerce, no premature purchases and withdrawal',async()=>{
  const vue=import.meta.resolve('vue'),core=moduleUrl('../src/lib/ga4-core.ts')
  const consentUrl=moduleUrl('../src/lib/consent.ts',{"from 'vue'":`from '${vue}'`})
  const pixelUrl=moduleUrl('../src/lib/meta-pixel.ts',{"from 'vue'":`from '${vue}'`,"import catalog from '../data/products.json'":`const catalog=${JSON.stringify(catalog)}`,"from './consent'":`from '${consentUrl}'`,"from './ga4-core'":`from '${core}'`,"import.meta.env.VITE_META_PIXEL_ID":"'1020017270659994'"})
  const originals=new Map(['window','document','navigator','location','localStorage','fetch','setInterval'].map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]))
  const values=new Map(),scripts=[],route={value:{path:'/products/8'}},orders=[],lines=[{id:8,quantity:1,price:1850,fullName:'Private Name',phone:'0771234567'}]
- let hook,fetches=0
+ let hook
  const storage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)}
  const settle=()=>new Promise(resolve=>setImmediate(resolve))
  try{
-  const mocks={window:{},localStorage:storage,navigator:{doNotTrack:'0',locks:{request:async(_name,fn)=>fn()}},location:{hostname:'printpro3d.lk',href:'https://printpro3d.lk/products/8'},document:{cookie:'',hidden:false,head:{append:s=>scripts.push(s)},getElementById:id=>scripts.find(s=>s.id===id),createElement:()=>({})},fetch:async()=>{fetches++;return {ok:true,json:async()=>({orders})}},setInterval:()=>0}
+  const mocks={window:{},localStorage:storage,navigator:{doNotTrack:'0',locks:{request:async(_name,fn)=>fn()}},location:{hostname:'printpro3d.lk',href:'https://printpro3d.lk/products/8'},document:{cookie:'',hidden:false,head:{append:s=>scripts.push(s)},getElementById:id=>scripts.find(s=>s.id===id),createElement:()=>({})},fetch:async()=>{return {ok:true,json:async()=>({orders})}},setInterval:()=>0}
   for(const [key,value]of Object.entries(mocks))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true})
   const consent=await import(consentUrl),meta=await import(pixelUrl)
   for(const path of ['/account','/admin','/success','/products/999999','/checkout?email=secret@example.com','/products?q=private','/products#address'])assert.equal(meta.metaSafeLocation('https://printpro3d.lk'+path),false,path)
@@ -48,12 +48,11 @@ test('Meta opt-in, safe URLs, ecommerce, confirmed purchases, dedupe and withdra
   const count=events().length;hook(null,null,null);await settle();assert.equal(events().length,count,'no private-page calls')
   location.href='https://printpro3d.lk/products';route.value.path='/products';hook(null,null,null);await settle()
   hook(null,null,null);await settle()
-  const purchases=events().filter(e=>e[1]==='Purchase');assert.equal(purchases.length,1)
-  assert.equal(purchases[0][2].value,1850);assert.equal(purchases[0][2].currency,'LKR');assert.equal(purchases[0][3].eventID,'purchase-PP3D-000123')
+  assert.equal(events().filter(e=>e[1]==='Purchase').length,0,'only the OMS sends Purchase, preventing delayed cross-channel duplicates')
   assert.ok(!JSON.stringify(events()).includes('Private'));assert.ok(!JSON.stringify(events()).includes('0771234567'))
   consent.chooseConsent(false);meta.metaCart('add_to_cart',lines);assert.equal(events().length,0,'withdrawal clears events queued before pixel loads')
   assert.equal(storage.getItem('pp3d-meta-orders'),null);assert.equal(storage.getItem('pp3d-meta-purchases'),null)
-  assert.ok(window.fbq.queue.some(args=>args[0]==='consent'&&args[1]==='revoke'));assert.ok(fetches>0)
+  assert.ok(window.fbq.queue.some(args=>args[0]==='consent'&&args[1]==='revoke'))
   navigator.doNotTrack='1';consent.chooseConsent(true,true);assert.equal(consent.advertisingConsent.value,false)
  }finally{for(const [key,desc]of originals){if(desc)Object.defineProperty(globalThis,key,desc);else delete globalThis[key]}}
 })
