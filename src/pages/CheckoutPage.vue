@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { trackShipping, recordOrder } from '../lib/ga4'
+import { metaOrderSubmitted } from '../lib/meta-pixel'
 import { productSku } from '../data/catalog'
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -34,6 +35,7 @@ const placeOrder = async () => {
     if (!response.ok || !result.reference) throw new Error(result.error || 'Could not save your order. Please try again.')
     sessionStorage.setItem('oms-order-receipt',JSON.stringify({...result,payment:details.payment,total:orderTotal.value}))
     recordOrder(result.reference,cart.items,deliveryFee.value,details.payment)
+    metaOrderSubmitted(result.reference,cart.items,deliveryFee.value)
     cart.clearCart()
     localStorage.removeItem('oms-checkout-pending')
     await router.push('/success')
