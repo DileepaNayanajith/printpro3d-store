@@ -51,7 +51,7 @@ test('Meta opt-in, safe URLs, ecommerce, confirmed purchases, dedupe and withdra
   const purchases=events().filter(e=>e[1]==='Purchase');assert.equal(purchases.length,1)
   assert.equal(purchases[0][2].value,1850);assert.equal(purchases[0][2].currency,'LKR');assert.equal(purchases[0][3].eventID,'purchase-PP3D-000123')
   assert.ok(!JSON.stringify(events()).includes('Private'));assert.ok(!JSON.stringify(events()).includes('0771234567'))
-  const before=events().length;consent.chooseConsent(false);meta.metaCart('add_to_cart',lines);assert.equal(events().length,before)
+  consent.chooseConsent(false);meta.metaCart('add_to_cart',lines);assert.equal(events().length,0,'withdrawal clears events queued before pixel loads')
   assert.equal(storage.getItem('pp3d-meta-orders'),null);assert.equal(storage.getItem('pp3d-meta-purchases'),null)
   assert.ok(window.fbq.queue.some(args=>args[0]==='consent'&&args[1]==='revoke'));assert.ok(fetches>0)
   navigator.doNotTrack='1';consent.chooseConsent(true,true);assert.equal(consent.advertisingConsent.value,false)
