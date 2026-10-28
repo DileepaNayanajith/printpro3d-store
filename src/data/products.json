@@ -871,5 +871,36 @@
     "colorImages": null,
     "bulkMin": null,
     "bulkPrice": null
+  },
+  {
+    "id": 1033,
+    "title": "Smoke RC Car — 2WD Rechargeable",
+    "sku": "P3D-RC-SMOKE-2WD",
+    "price": 3350,
+    "category": "rc-cars",
+    "thumbnail": "/products/smoke-rc-car-2wd-front.jpg",
+    "description": "Bring extra excitement to RC play with this brand-new, rechargeable 2WD smoke-effect car. Its black-and-yellow off-road buggy styling, chunky tread tyres and visible spring suspension give it a bold look. Suitable for ages 6 and up, as marked on the packaging.",
+    "features": [
+      "Smoke effect",
+      "2WD (two-wheel drive)",
+      "Rechargeable car",
+      "Spring suspension / shock absorption",
+      "Large tread tyres",
+      "Black-and-yellow off-road buggy design",
+      "Ages 6+",
+      "Brand-new condition"
+    ],
+    "images": [
+      "/products/smoke-rc-car-2wd-front.jpg",
+      "/products/smoke-rc-car-2wd-rear.jpg",
+      "/products/smoke-rc-car-2wd-top.jpg",
+      "/products/smoke-rc-car-2wd-box.jpg"
+    ],
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
   }
 ]
