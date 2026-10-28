@@ -902,5 +902,61 @@
     "colorImages": null,
     "bulkMin": null,
     "bulkPrice": null
+  },
+  {
+    "id": 1034,
+    "title": "1911 Electric Gel Blaster",
+    "sku": "P3D-GEL-1911",
+    "price": 2800,
+    "category": "gel-blasters",
+    "thumbnail": "/products/1911-gel-blaster-side.jpg",
+    "description": "A 1911-style electric gel-ball toy blaster with a black body, orange accents and a top-mounted gel-ball hopper. The packaging identifies it as a Sheng Ye Toys 1911 Electric Mode model with USB charging. For ages 14+. Wear suitable eye protection and never aim at faces or animals.",
+    "features": [
+      "Electric gel-ball toy blaster",
+      "Rechargeable battery with USB charging",
+      "Top-mounted gel-ball hopper",
+      "Black finish with orange accents",
+      "Ages 14+ (as marked on packaging)",
+      "Use suitable eye protection"
+    ],
+    "images": [
+      "/products/1911-gel-blaster-side.jpg",
+      "/products/1911-gel-blaster-angle.jpg",
+      "/products/1911-gel-blaster-detail.jpg",
+      "/products/1911-gel-blaster-box-front.jpg",
+      "/products/1911-gel-blaster-box-back.jpg"
+    ],
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
+  },
+  {
+    "id": 1035,
+    "title": "Hot Wheels Card Wall Hanger — 4-Card Holder",
+    "sku": "P3D-HW-CARD-HOLDER-4",
+    "price": 300,
+    "category": "display-racks",
+    "thumbnail": "/products/hot-wheels-four-card-holder-front.jpg",
+    "description": "Keep your carded car collection on display with this black wall hanger, designed to hold four car cards in a vertical arrangement. Slide the card edges into the side rails to display the cars in their packaging. Price is for one holder only; cars and cards shown in the photos are not included.",
+    "features": [
+      "Holds 4 car cards",
+      "Vertical wall-display design",
+      "Side rails hold the card edges",
+      "Black 3D-printed holder",
+      "Holder only — cars and cards not included"
+    ],
+    "images": [
+      "/products/hot-wheels-four-card-holder-front.jpg",
+      "/products/hot-wheels-four-card-holder-wall.jpg"
+    ],
+    "stock": null,
+    "badge": "New arrival",
+    "colors": null,
+    "colorImages": null,
+    "bulkMin": null,
+    "bulkPrice": null
   }
 ]
